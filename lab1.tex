@@ -1,0 +1,1025 @@
+\documentclass[12pt]{journal}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{fancyhdr}
+\usepackage{verbatim}
+\usepackage[formats]{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{newfloat}
+\usepackage{array}
+\usepackage{fancyvrb}
+\usepackage{makecell}
+\usepackage{multicol}
+\usepackage{bold-extra} % Provides bold support for monospaced fonts
+\usepackage{chngpage}
+\usepackage{geometry}
+\usepackage{paracol}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+\usepackage{caption} % For table numbering
+\usepackage{soul}
+\usepackage{varioref}
+\usepackage{wrapfig}
+
+
+% Define the new aside environment style without arrows
+\usepackage{xparse}
+\usepackage{xstring}
+\usepackage{tikz}
+\usepackage[framemethod=TikZ]{mdframed}
+
+% Reduce left and right margins
+\geometry{
+  left=2cm,  % Adjust the left margin
+  right=2cm, % Adjust the right margin (leaving space for the right column)
+  top=2.5cm,
+  bottom=2.5cm
+}
+
+\definecolor{black}{rgb}{0,0,0}
+\definecolor{yellow}{rgb}{1, 0.89, 0.36}
+\definecolor{blue}{rgb}{0.49803922, 0.78431373, 0.97254902}
+\newcommand{\keyword}[1]{{\usefont{OT1}{lmtt}{b}{n}#1}}
+
+
+
+
+% Define a counter for the question environment
+\newcounter{questioncounter}
+
+% Define a custom environment that wraps around mdframed and accepts a custom title argument
+\NewDocumentEnvironment{question}{o}{ % [o] denotes an optional argument
+  \stepcounter{questioncounter} % Increment the counter
+  \begin{mdframed}[
+    backgroundcolor=yellow!40,
+    roundcorner=10pt,
+    linewidth=1pt,
+    linecolor=black, % Set border color to black
+    frametitlebackgroundcolor=yellow!50, % Match background color for title
+    frametitleaboveskip=10pt,
+    frametitlebelowskip=5pt,
+    frametitlerule=false, % Ensure a black border under the title
+    frametitlerulecolor=black, % Set title border color to black
+    frametitle={Question \thequestioncounter: \IfNoValueTF{#1}{Default Title}{#1}} % If no title, use "Default Title"
+  ]
+}{
+\end{mdframed}
+}
+
+\newcounter{bonusquestioncounter}
+\NewDocumentEnvironment{bonusquestion}{o}{ % [o] denotes an optional argument
+  \stepcounter{bonusquestioncounter} % increment the counter for bonusquestion
+  \begin{mdframed}[
+    backgroundcolor=yellow!40,
+    roundcorner=10pt,
+    linewidth=1pt,
+    linecolor=black, % Set border color to black
+    frametitlebackgroundcolor=yellow!50, % Match background color for title
+    frametitleaboveskip=10pt,
+    frametitlebelowskip=5pt,
+    frametitlerule=false, % Ensure a black border under the title
+    frametitlerulecolor=black, % Set title border color to black
+    frametitle={Bonus Question \thebonusquestioncounter: \IfNoValueTF{#1}{Default Title}{#1}} % If no title, use "Default Title"
+  ]
+}{
+\end{mdframed}
+}
+
+\NewDocumentEnvironment{aside}{O{0.7,0.3}O{right}O{}}{%
+  \par\noindent%
+  \columnratio{#1}%
+  \begin{paracol}{2}%
+  \IfStrEqCase{#2}{%
+    {left}{\switchcolumn[0]}%
+    {right}{\switchcolumn[1]}%
+  }
+  \begin{extra}[frametitle=#3]%
+}{%
+  \end{extra}%
+  \IfStrEqCase{#2}{%
+    {left}{\switchcolumn[1]}%
+    {right}{\switchcolumn[0]}%
+  }
+  \end{paracol}%
+  \par%
+}
+
+\newmdenv[
+  backgroundcolor=blue!50,
+  roundcorner=10pt,
+  linewidth=1pt,
+  linecolor=black, % Set border color to black
+  frametitlebackgroundcolor=blue!60, % Match background color for title
+  frametitleaboveskip=10pt,
+  frametitlebelowskip=5pt,
+  frametitlerule=false, % Ensure a black border under the title
+  frametitlerulecolor=red % Set title border color to black
+]{extra}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{console}{
+    keywordstyle=\color{black},
+    commentstyle=\color{codegray},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstdefineformat{V}{~=\( \sim \)}
+
+\lstset{style=mystyle, format=V, numbers=none}
+
+
+\graphicspath{ {./images/} }
+
+\title{Lab Assignment 1 }
+
+\author{}
+\date{}
+
+%New command to display footnote whose markers will always be hidden
+\let\svthefootnote\thefootnote
+\newcommand\blfootnotetext[1]{%
+  \let\thefootnote\relax\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \let\thefootnote\svthefootnote%
+}
+
+%Overriding the \footnotetext command to hide the marker if its value is `0`
+\let\svfootnotetext\footnotetext
+\renewcommand\footnotetext[2][?]{%
+  \if\relax#1\relax%
+    \ifnum\value{footnote}=0\blfootnotetext{#2}\else\svfootnotetext{#2}\fi%
+  \else%
+    \if?#1\ifnum\value{footnote}=0\blfootnotetext{#2}\else\svfootnotetext{#2}\fi%
+    \else\svfootnotetext[#1]{#2}\fi%
+  \fi
+}
+
+% Set custom header spanning both columns
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+\fancyhf{}  % Clear the default header/footer
+\fancyhead[R]{ECE/CS 3700}  % Right-side header content
+\fancyhead[L]{Lab 1: Intro to Verilog}  % Left-side header content
+
+
+
+\begin{document}
+\captionsetup{tablewithin=section}
+\maketitle
+\section{Introduction}
+The objective of this lab assignment is familiarize yourself with Verilog, the hardware design process using the FPGA, and provide a concrete foundation on how to relate the abstract and high-level syntax of a hardware description language like Verilog, to the formal mathematical descriptions you learn in class.
+
+\section{An Introduction to Verilog}
+
+\subsection{Learning Outcomes}
+Verilog is a Hardware Description Language (HDL) that is used to model electronic systems. It allows designers to describe the behavior and structure of digital circuits and systems. Below you will find a brief overview of the language and its syntax. All of these concepts will be discussed in detail later on. The purpose of this section is to provide a brief introduction to the Verilog syntax to serve as a foundation for the sections that follow.
+
+\subsection{Modules}
+
+In Verilog, designs are encapsulated in modules. A module is similar to a "black box" with inputs and outputs.
+
+\begin{lstlisting}[language=verilog]    
+module example_module(
+    input wire a, b,
+    output wire y
+);
+    // Module contents go here
+endmodule
+\end{lstlisting}
+
+
+\subsection{Datatype}
+
+Verilog uses two main data types for signals, often referred to as nets:
+\begin{itemize}
+    \item {\textbf{\texttt{wire}}: Represents a physical wire connecting components. Its value is continuously driven.}
+    \item {\textbf{\texttt{reg}}: Short for register. Represents a memory element. It retains its value until a new value is assigned.}
+\end{itemize}
+
+\subsection{Operators}
+
+Verilog uses familiar logical operators that correspond to Boolean logic:
+
+\begin{itemize}
+  \item \text{AND: } \& 
+  \item \text{OR: } $\|$
+  \item \text{NOT: } $\sim $
+  \item \text{XOR: } $\wedge$
+\end{itemize}
+
+Example: \begin{lstlisting}[language=verilog]
+assign y = a & b;  // y is the AND of a and b
+\end{lstlisting}
+
+
+\subsection{Assignments}
+There are two types of assignments in Verilog:
+\begin{itemize}
+  \item Continuous assignments (using \texttt{assign}): Used for combinational logic.
+  \item Procedural assignments (inside \texttt{always} blocks): Used for sequential logic.
+\end{itemize}
+
+\subsection{Behavioral Descriptions}
+Verilog allows you to describe circuit behavior using familiar programming constructs:
+\begin{lstlisting}[language=verilog]    
+always @(*) begin
+    if (condition) begin
+        // do something
+    end else begin
+        // do something else
+    end
+end
+\end{lstlisting}
+
+\subsection{Connecting to Boolean Logic}
+The boolean expressions you've learned in class directly translate to Verilog:
+\begin{itemize}
+  \item Boolean AND (\texttt{A·B}) becomes \texttt{A \& B} in Verilog
+  \item Boolean OR (\texttt{A+B}) becomes \texttt{A | B} in Verilog
+  \item Boolean NOT (\texttt{A'}) becomes \texttt{\textasciitilde A} in Verilog
+\end{itemize}
+For example, the boolean expression \texttt{Y = A·B + C'} would be written in Verilog as:
+\begin{lstlisting}[language=verilog]
+assign Y = (A & B) | (~C);
+\end{lstlisting}
+
+\subsection{Thinking in hardware}
+One of the most important concepts when working with Verilog or any hardware description language (HDL) is understanding that you are not writing software, you are describing hardware. Although Verilog syntax may resemble C, particularly through its use of conditional statements, loops, and even a compiler, the similarity is only superficial. The underlying principles of hardware design are fundamentally different from traditional programming.
+
+In Verilog, every line of code represents real physical hardware components that run concurrently. Unlike in software programming, where instructions are carried out one after another, hardware components function simultaneously. Therefore, when writing Verilog, it is essential to think, "How would this behavior be implemented with physical components like gates, flip-flops, or multiplexers?"
+
+For example, take the following Verilog code. If this were C code, you would expect it to be converted into sequential instructions executed by the processor. In hardware, however, you are designing a system where all the components can work together in parallel. It is not immediately obvious what combinational circuit would correctly capture the described behavior.
+
+\begin{bonusquestion}[What does it mean?]
+Once you have finished with this lab, consider coming back to this code snippet and determining a possible logic circuit implementation. Draw the logic circuit diagram and the corresponding truth table.
+\end{bonusquestion}
+
+\begin{lstlisting}[language=Verilog][H]
+    // all variables have been previously declared
+    
+    if (!rst) begin
+      Q  = 0;
+      Qn = 1;
+    end else if (S) begin
+      Q  = 1;
+      Qn = 0;
+    end else if (R) begin
+      Q  = 0;
+      Qn = 1;
+    end
+    
+\end{lstlisting}
+\clearpage
+\begin{question}[Practice]
+    Let's practice getting in this mindset with a few problems. Below you will find some simple Verilog statements. Below each statement, draw a circuit diagram that best approximates it. Note that every code block can be realized with a combination of gates that you have learned about in class. You may ignore the assign keyword; you will go over that later in the lab. For now, focus on the expression to the right of the equal sign. If you are uncertain about any syntax, refer to Table \ref{tab:dataflow} in the Appendix.
+\end{question}
+
+
+
+
+\begin{lstlisting}[language=Verilog]
+    assign y = (a & b) | (~a & c);
+\end{lstlisting}
+\vspace{3\textheight}
+\begin{lstlisting}[language=Verilog]
+    assign y = sel ? a : b;
+\end{lstlisting}
+\textit{\small{hint: 2 to 1 multiplexer}}
+\vspace{16em}
+\begin{lstlisting}[language=Verilog]  
+    if (a & b) begin
+        y = 1;
+    end else begin
+        y = c;
+    end
+\end{lstlisting}
+\newpage
+\section{Your first design}
+\subsection{Learning Outcomes}
+This section will walk you through creating a project in Verilog and using three different modelling styles to implement a 4 to 1 multiplexer. Upon completing this section, you should be familiar with the design process of combinational circuits involving several logic elements.
+
+
+\subsection{Multiplexer Design}
+
+\columnratio{0.5, 0.5}
+\begin{paracol}{2}
+\switchcolumn[0]    
+Before you can get to designing a circuit in Verilog, you need to familiarize ourselves with the syntax. There are 3 modeling styles that Verilog can understand: \textbf{structural}, \textbf{data flow}, and \textbf{behavioral}. Each of these styles represents a different level of abstraction, listed here from least to most abstraction. 
+\switchcolumn[1]
+\begin{extra}[frametitle={Textbook Reading: Multiplexers}]
+    This lab presents a cursory examination of the multiplexer circuit. For a more in depth look, including deriving the truth table and circuit provided below, you are encouraged to read through section 2.8 in your textbook
+\end{extra}
+\switchcolumn[0]
+To get you familiar with the syntax, you will be building a 4:1 multiplexer in each of these three styles.
+\end{paracol}
+A multiplexer is a circuit that allows you to select different inputs from a set of inputs. In the case of a 4:1 multiplexer, there are 4 inputs, and you can select one of them as the output. 
+The block diagram of the multiplexer is given in Figure \ref{fig:41mux}. Multiplexers are a critical component to modern computing architectures, and they can be realized with a simple combinational logic circuit. The schematic and multiplexer are shown below.
+\clearpage
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+  \draw (0,0) rectangle (3,5);
+  \node at (1.5,2.5) {4:1 MUX};
+
+  % Inputs
+  \draw[->] (-2,4.5) -- (0,4.5) node[midway,above] {$I_0$};
+  \draw[->] (-2,3.5) -- (0,3.5) node[midway,above] {$I_1$};
+  \draw[->] (-2,2.5) -- (0,2.5) node[midway,above] {$I_2$};
+  \draw[->] (-2,1.5) -- (0,1.5) node[midway,above] {$I_3$};
+
+  % Output
+  \draw[->] (3,2.5) -- (4.5,2.5) node[midway,above] {$Y$};
+
+  % Selection lines
+  \draw[->] (-2,0) -- (-2,0.7) -| (0, 0.7) node[right] {$S_0$};
+  \draw[->] (-1, -.5) -- (-1,.3) -| (0, .3) node[right] {$S_1$};
+\end{tikzpicture}
+\caption{4:1 Multiplexer block diagram}
+\label{fig:41mux}
+\end{figure}
+
+\begin{multicols}{2}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{images/4to1multi.png}
+    \caption{4:1 Multiplexer schematic}
+    \label{fig:41muxschem}
+\end{figure}
+
+\columnbreak
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+         \thead{$S_1$} & \thead{$S_2$} & \thead{$y$} \\
+    \hline
+    0 & 0 & $D_0$ \\
+    0 & 1 & $D_1$ \\
+    1 & 0 & $D_2$ \\
+    1 & 1 & $D_3$ \\
+    \hline
+    
+    \end{tabular}
+    \caption{4:1 Multiplexer truth table}
+    \label{tab:my_label}
+\end{table}
+\end{multicols}
+
+\subsection{Creating a project}
+Before you can write any Verilog, you need to define a project. Let us do that now. You will be using a commonly recommended folder structure for digital design projects, as it provides a well-organized environment for your work. This structure will be important in future labs and courses to help you keep your projects structured and manageable. To begin, determine where you would like to save your projects and create the directory structure below.
+\clearpage
+\begin{lstlisting}[style=console,language=sh]
+lab_1
++-- hdl/ # This is where you will save your Verilog modules
+|   +-- top.v # Create this file and leave it empty.
++-- ip/ # Any IP that you generate goes here
++-- simulation/ # Your Questa project files go here
++-- synthesis/ # Your quartus project files go here
++-- test/ # Your test benches go here
+\end{lstlisting}
+\vspace{4em}
+\columnratio{0.6,0.4}
+\begin{paracol} {2}   
+\switchcolumn[1]
+\begin{extra}[frametitle={Verilog and System Verilog}]
+    SystemVerilog is a superset of Verilog which add many extra features for usecases other than synthesis. In this class you will focus on standard Verilog.
+\end{extra}
+\switchcolumn[0]
+Once you have created your project folders, launch Quartus. When you first launch Quartus, you will be greeted with a welcome screen that prompts you to open or create a new project. Choose "New Project Wizard".
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{images/newproject.png}
+\end{figure}
+\end{paracol}
+
+
+Continue past the first prompt and you will be asked to specify the location for your project. Select the synthesis folder you created above. In the project name prompt, use the same name you chose for the root of the project directory. If you follow the naming conventions laid out here, it will be lab\_1. Change the name of your top-level design entity to top, corresponding to the top.v file you created above.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{images/project_settings.png}
+\end{figure}
+
+For the type of project on the next prompt, select "empty project" and continue. In the next prompt, you will be asked to add existing files to the project. Use the file browser to select the hdl/top.v file you created above and continue.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/addfiles.png}
+\end{figure}
+
+The final step is the selection of the board. In this window, there are two tabs, "Device" and "Board"; switch to the "Board" tab. In this tab, ensure that the family is set to Max 10 and select the "Max DE10 - Lite" board. In the bottom-left corner of the tab interface is a checkbox labeled "create top-level design file"; deselect it.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{images/quartus_board.png}
+\end{figure}
+
+After you have selected your board, you can continue through the remaining prompts without changing any options. Once you select finish, you may be faced with a warning to only open projects from trusted sources. If so, press "Yes".
+
+Now in the project editor view you will see a gray screen with the words "Quartus Prime" and nothing else. To fix this, in the project navigator, switch from heirarchy to file view.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/project_nav.png}
+\end{figure}
+
+\subsubsection{Top-Level Entity}
+
+You should have only one file in this view, the top.v file you created earlier. If you have a file named DE10\_LITE\_Golden\_top.v this means you forgot to deselect the "Create top-level design file" during board selection. You will not be using this file, so go ahead and right-click the file in the navigator panel, and select "Remove from Project". You will also need to update the top-level entity. Right-click top.v in the navigator panel and select "Set as Top-Level Entity".
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{images/toplevel.png}
+\end{figure}
+
+
+Switch your project navigator to \textbf{Files} if it is not already. Open the top.v file by double-clicking it in the navigator. This will open the blank file you created earlier. Paste the code below into the editor and press \textbf{File} $\longrightarrow$ \textbf{Save}. you will discuss this code later in the lab. For now, add it to top.v and save it.
+
+\begin{lstlisting}[language=verilog]
+module top (
+    input wire [1:0] s,
+    input wire [3:0] d,
+    output wire y
+);
+
+    // modules go here
+
+endmodule
+\end{lstlisting}
+
+\subsection{Modules}
+Verilog separates internal design logic from external layout using \textbf{modules}. A module can be understood as a "block" in a block diagram. In the module, various logic operations are applied to the inputs to produce an output. However, from an external perspective, the internal logic remains hidden; you only see the inputs and outputs. This abstraction enables modular design where the detailed workings of one module are encapsulated, yet the module can still interact with others through its well-defined inputs and outputs.
+
+For a visual example, consider Figures \ref{fig:41mux} and \ref{fig:41muxschem}. Figure \ref{fig:41mux} shows the block diagram of a 4:1 multiplexer, where it is clear that the module receives 6 inputs and produces 1 output. Figure \ref{fig:41muxschem}, on the other hand, shows the internal logic, detailing how the 6 inputs are processed to generate the single output.
+
+In Verilog, all logic must be contained within a module. You will create our first module now. In Quartus, go to File $\shortrightarrow$ New and choose Verilog HDL file. Once you have the new file open, save it by going to File $\shortrightarrow$ Save As and save it in your hdl directory as Mux41Structural.v. This file will contain our multiplexer definition. Although it is possible to define multiple modules in a single file, it is not recommended. In this class, you will stick to the one module per file standard.
+
+\begin{extra}[frametitle={Naming Conventions}]
+    Naming conventions are not standardized across the Verilog community, and many have their own preferred naming style. Some common practices include proper casing module names, for instance MyModule.v, and including information about the input/output structure of the module in the name. For instance, Mux41, to indicate a 4 input 1 output multiplexer. Whatever convention you choose, the rules below should always be valid.
+\begin{itemize}
+    \item Name your files and modules the same.
+    \item Do not include spaces in the module or file names.
+    \item The purpose of the module/file names should be immediately recognizable by the name.
+\end{itemize}
+\end{extra}
+
+To begin, copy and paste the code below.
+
+\begin{lstlisting}[language=Verilog]
+module Mux41Structural (
+    input wire [1:0] s, 
+    input wire [3:0] d,
+    output wire y
+);
+    // logic goes here
+endmodule
+\end{lstlisting}
+
+
+Let us review what you have written and understand it better. The word \keyword{module} is a keyword and informs the compiler that you are defining a new module. Directly after the module keyword is the module name. Notice how it matches the name of the file and provides a clear indication of its purpose.
+\columnratio{.5, .5}
+\begin{paracol}{2}
+  Within the parentheses is defined the input and output wires. 
+\switchcolumn[1]
+\vspace{8em}
+\begin{extra}[frametitle={A note about code editors}]
+    Quartus is required to create a new project, but the Quartus editor is little more than a basic text editor. If you prefer, you may use any text editor or IDE you wish. Many such programs have plugins available to support the Verilog syntax. Note, hoyouver, that you are using standard Verilog in this class, so make sure that whatever editor you choose has an option to disable SystemVerilog suggestions.
+\end{extra}
+\switchcolumn[0]
+\noindent
+Recall that modules encapsulate logic by exposing only the inputs and outputs. The keyword \keyword{input} defines all inputs that the module can accept. If you need to access a signal from somewhere outside of your module, you will define an input for it. As you might expect, the keyword \keyword{output} defines the output of the module, and just like the input, anything that is meant to be sent from this module to somewhere else in the program will have an output defined for it. The keyword \keyword{endmodule} is required to indicate to the compiler where the module ends and \keyword{wire} defines the type of node you are using for our inputs and outputs, which you will explain in more detail later on.
+\end{paracol}
+You may notice striking similarities between this code and the code for top.v above. This is not a coincidence. The inputs and outputs used by \texttt{Mux41Structural} will need to come from somewhere. By using corresponding inputs and outputs in our top-level module, you are prepared to use the physical inputs and outputs (IO) from the FPGA board for this purpose. You will not actually be connecting our modules to the board in this lab, but you will do so in future labs where you will explain the processes in more detail.
+
+
+Right now our module does not do anything. You could pass input signals to it and you would always get a floating signal as an output. Let us fix that by implementing the logic above. Refer to figure \vref{fig:41muxschem} if you need to jog your memory.
+\clearpage
+\begin{extra}[frametitle={On nets: wires and regs}]
+    In Verilog, signals are passed betyouen gates and modules using \textbf{nets} instead of variables. There are two primary types of nets: \textbf{wires}, declared with the \texttt{wire} keyword, and \textbf{regs}, declared with the \texttt{reg} keyword. The wires are used to represent the connections and can only be assigned a value through a continuous assignment using the \texttt{assign} keyword. Once assigned, a wire always reflects the value of the assigned expression and cannot be reassigned. On the other hand, \textbf{regs} are stateful and act like simple memory. Unlike wires, \textbf{regs} can be assigned and reassigned multiple times, but only within an \texttt{always} block. --- Always blocks are addressed in detail in the section on behavioral modeling. --- Once an \texttt{always} block controls a reg, it "owns" it, meaning that only that block can modify its value. To avoid conflicts, only one \texttt{always} block should be responsible for assigning a value to any particular reg.
+\end{extra}
+
+\begin{extra}[frametitle={bus notation}]
+    In the module code, inputs \textbf{\texttt{s}} and \textbf{\texttt{d}} are defined as a bus, which is a concise way of grouping multiple nets under a single name. To access an individual net on a bus, use square bracket notation, for example: \texttt{y = bus[2]}. Similarly, individual nets on a bus can be assigned using the same notation, such as \texttt{bus[2] = a \& y}. You can also assign values to the entire bus at once, like this: \texttt{assign bus = {a \& b, c | d, e \& f}}. For more examples and syntax guidance, see Table \ref{tab:misc} in the appendix.
+\end{extra}
+
+\subsection{Gate Level Modeling}
+The first modeling style that you will learn is called structural modeling, or sometimes gate-level modeling. As the name implies, at this level of abstraction, the designer specifies the exact gates and paths to use. This provides fine grained control over the design but requires a more verbose syntax that does not scale well to very large designs. To get started, review this sample 2:1 multiplexer design written using structural syntax. Your design will follow a similar pattern. Write the logic for your 4:1 multiplexer in the module provided above. You may refer to table \ref{tab:structural} in the Appendix for syntax reference, however, all the relevant syntax can be found in \ref{tab:struct1}
+
+\begin{longtable}{|>{\centering\arraybackslash}m{4cm}|>
+{\centering\arraybackslash}m{6cm}|>{\centering\arraybackslash}m{4cm}|}
+\hline
+\textbf{Gate Type} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endfirsthead
+\multicolumn{3}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Gate Type} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endhead
+\hline \multicolumn{3}{|c|}{{\textbf{Continued on next page}}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+AND Gate & \texttt{and (output, input1, input2, ...inputN);} & \texttt{and U1 (Y, A, B);} \\ 
+\hline
+OR Gate & \texttt{or (output, input1, input2, ...inputN);} & \texttt{or U2 (Y, A, B);} \\
+\hline
+NOT Gate & \texttt{not (output, input);} & \texttt{not U3 (Y, A);} \\
+\hline
+\caption{A selection of structural Verilog syntax}
+\label{tab:struct1}
+\end{longtable}
+\clearpage
+\begin{lstlisting}[language=verilog]
+module Mux21Structural (input wire s, d[1:0], output wire y);
+  wire not_s;
+  wire and_out1, and_out2;
+  
+  // Inverter for select signal
+  not not1(not_s, s);
+  
+  // AND gates
+  and and1(and_out1, d[0], not_s);
+  and and2(and_out2, d[1], s);
+  
+  // OR gate for final output
+  or or1(y, and_out1, and_out2);
+endmodule
+\end{lstlisting}
+
+\subsection{Top-Level Entity - Revisited}
+With your first module created, you should revisit the concept of top-level entities in more detail.
+
+The top-level entity is a module just like everything else in verilog. The convention is to name this file \textbf{top.v} but it is not strictly required. Like with other modules, the module name should match the file name. What makes the top-level entity different is that it serves as the entry point to your digital logic. Without a populated top-level entity, the compiler will not run. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/image_2024-09-26_224700848.png}
+    \caption{Block diagram of LMx24-N, LM2902-N Low-Poyour, Quad-Operational Amplifiers \\
+    \tiny{Copyright © 2000–2015, Texas Instruments Incorporated}}
+    \label{fig:lm324n}
+\end{figure}
+
+An effective way to conceptualize the top-level entity is to think of it as a block diagram (Figure \vref{fig:lm324n}). The diagram shows the inputs and outputs of the internal modules, how these modules are connected, and where their signals are expected to come from. The top-level entity serves the same purpose for the compiler, where the "blocks" are instances of the modules you have defined, and external IO are defined as the input and output wires of the top-level module.
+
+To add a "block", you need to create an instance of a module within the top-level entity. The syntax for module instantiation is given below. See Table \vref{tab:misc} in the appendix for more details.
+\begin{lstlisting}
+    <module_name> <instance_name> (.port_name(signal), \cdots);
+\end{lstlisting}
+This is what that looks like for the structural model you just created.
+
+\begin{lstlisting}[language=verilog]
+module top (
+    input wire [1:0] s,
+    input wire [3:0] d,
+    output wire y
+);
+    // Instantiate the Mux41Structural module
+    Mux41Structural mux_instance (
+        .s(s),  // Connect top-level 's' to Mux41Structural 's'
+        .d(d),  // Connect top-level 'd' to Mux41Structural 'd'
+        .y(y)   // Connect top-level 'y' to Mux41Structural 'y'
+    );
+endmodule
+\end{lstlisting}
+
+With the top-level entity populated, you are ready to complete Question 2. For future questions, comment out the previous instantiation in the top-level entity and replace it with the correct module for the question.
+
+\begin{question}[Structural 4:1 Mux Design]
+    Once you have completed your multiplexer design, compile it by going to \textbf{Processing $\longrightarrow$ Start Compilation.} This may take several minutes to complete. After the compilation completes, view the compiled netlist by going to \textbf{Tools $\longrightarrow$ Netlist Vieyours $\longrightarrow$ RTL Vieyour.} Include an image of the compiled netlist.
+\end{question}
+
+\clearpage
+\subsection{Dataflow Modeling}
+Dataflow modeling provides a layer of abstraction over structural modeling. Instead of defining every gate to use and the connections between them, the designer models the expected flow of a signal through the circuit using Boolean algebraic expressions. Consider the 2to1 multiplexer example below. This module has the same functionality as the structural one from before, but the logic has been reduced to a single line. Be aware that although this example performs a direct assignment to its output wire Y, more complex designs may still require defining additional internal nets. \\
+\\
+Create a new module for your dataflow multiplexer design by going to \textbf{File $\longrightarrow$ New $\longrightarrow$ Verilog File }. Create a new module following the same pattern as before. Give the module a unique name following your chosen naming convention and save the verilog file with the same. Write your data flow logic within the module block as before. Relevant syntax can be found in Table \ref{tab:df1} below. For a deeper look into behavioral syntax consider reviewing \vref{tab:behavioral} in the Appendix.
+\\
+\begin{lstlisting}[language=verilog]
+module Mux21Dataflow(input wire s, d[1:0], output wire y);
+  // Dataflow implementation using conditional operator
+  assign y = s ? d[1] : d[0];
+endmodule
+\end{lstlisting}
+
+\begin{longtable}{|>{\centering\arraybackslash}m{4cm}|>{\centering\arraybackslash}m{6cm}|>{\centering\arraybackslash}m{4cm}|}
+\hline
+\textbf{Dataflow Element} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endfirsthead
+\multicolumn{3}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Dataflow Element} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endhead
+\hline \multicolumn{3}{|c|}{{\textbf{Continued on next page}}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+Continuous Assignment & \texttt{assign <net> = <expression>;} & \texttt{assign Y = A \& B;} \\ 
+\hline
+Bitwise AND & \texttt{assign <net> = <input1> \& <input2>;} & \texttt{assign Y = A \& B;} \\ 
+\hline
+Bitwise OR & \texttt{assign <net> = <input1> | <input2>;} & \texttt{assign Y = A | B;} \\
+\hline
+Bitwise NOT & \texttt{assign <net> = ~<input>;} & \texttt{assign Y = ~A;} \\
+\hline
+\caption{A subset of Verilog dataflow syntax}
+\label{tab:df1}
+\end{longtable}
+
+\begin{question}[Dataflow 4:1 Mux Design]
+    Once you have completed your multiplexer design, compile it by going to \textbf{Processing $\longrightarrow$ Start Compilation.} This may take several minutes to complete. After compilation completes, view the compiled netlist by going to \textbf{Tools $\longrightarrow$ Netlist Vieyours $\longrightarrow$ RTL Viewer.} \\
+    Include an image of the compiled netlist. Compare the netlist with the structural one. Note any differences you notice.
+\end{question}
+
+\clearpage
+\subsection{Behavioral Modeling}
+Behavioral modeling is the highest level of abstraction offered by the Verilog language. In contrast with the dataflow and structural paradigms, behavioral modeling does not deal with signal propagation directly at any level. Rather, behavioral modeling allows the designer to use familiar programming syntax to describe the desired behavior of the circuit and allows the compiler to create the optimal design. This modeling style offers the greatest amount of freedom and the least amount of control. Consider the following example. The syntax isn't as straightforward as the dataflow example, but notice that the syntax focuses on the desired behavior not on structure or logic expressions.
+
+
+\begin{lstlisting}[language=verilog]
+module Mux21Behavioral(input wire s, d[1:0], output reg y);
+  // Behavioral implementation using always block
+  always @(*)
+  begin
+    if (s)
+      y = d[1];
+    else
+      y = d[0];
+  end
+endmodule
+\end{lstlisting}
+
+\subsubsection{Always Syntax}
+A "block" in Verilog is any section of code that encapsulates other code. They can be recognized by the keyword \textbf{\texttt{end}} or \textbf{\texttt{end\textlangle block\_name\textrangle}} in some instances, such as the keyword \textbf{\texttt{endmodule}} to close a module block. These end tokens denote the end of a block. If the block has a \textbf{\texttt{end\textlangle block\_name\textrangle}} closer, then the block is opened with the corresponding \textbf{\texttt{block\_name}}. Otherwise it opens with a \textbf{\texttt{begin}} keyword. In either case, the block provides the compiler with information on how to handle the code within it.
+
+
+An alawys block contains three crucial parts. They are:
+
+\begin{enumerate}
+    \item The sensitivity list: \textbf{\texttt{always @(*)}}
+    \item The block opener: \textbf{\texttt{begin}}
+    \item The logic to be performed 
+    \item The block closer: \textbf{\texttt{end}}
+\end{enumerate}
+
+Although the full line \textbf{\texttt{always @(*)}} is required to define the sensitivity list, typically when referring to the list, one means only those values within the parentheses; \textbf{*} in this example.
+
+An always block is an abstraction specific to behavioral modeling. Behavioral modeling abstracts the specific definition of component relationships by using \textbf{\texttt{always}} blocks and sensitivity lists. The \textbf{\texttt{always}} block signals to the compiler that the logic inside should \textbf{\textit{always}} be evaluated whenever a signal in the sensitivity list changes. Based on this, the compiler infers the necessary hardware to establish the relationship. Sensitivity lists can be defined in two ways: explicitly, by listing signal names within parentheses, or implicitly, using \textbf{*}. The implicit method allows the compiler to infer the relationships from the behavior, making it generally easier and safer to use. However, explicit lists provide more control when needed.
+
+\subsection{Modeling Assignment}
+As before, create a new file and module. \ul{This time, instead of creating an output \textbf{wire}, create an output \textbf{reg} instead}. Write a behavioral model of a 4:1 multiplexer. Refer to Table \ref{tab:behav1} below, as well as Table \vref{tab:behavioral} in the Appendix for a syntax reference.
+
+\subsubsection{Behavioral Modeling}
+\begin{longtable}{|>{\centering\arraybackslash}m{4cm}|>{\centering\arraybackslash}m{6cm}|>{\centering\arraybackslash}m{4cm}|}
+\hline
+\textbf{Behavioral Element} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endfirsthead
+\multicolumn{3}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Behavioral Element} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endhead
+\hline \multicolumn{3}{|c|}{{\textbf{Continued on next page}}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+Always Block & \texttt{always @ (sensitivity\_list)} & \texttt{always @ (posedge clk)} \\ 
+\hline
+Blocking Assignment & \texttt{= <expression>;} & \texttt{A = B + C;} \\ 
+\hline
+If-Else Statement & \texttt{if (condition) begin \dots end else begin \dots end} & \texttt{if (A > B) begin Y = 1; end else begin Y = 0; end} \\
+\hline
+Case Statement & \texttt{case (expression) \dots endcase} & \texttt{case (opcode) \dots endcase} \\
+\hline
+\caption{A sample of Verilog behavioral syntax}
+\label{tab:behav1}
+\end{longtable}
+
+\begin{extra}[frametitle={Assignment operator (=)}]
+    The equal sign assignment is what is known as a blocking assignment. It ensures a sequential assignment of values when consecutive assignments are performed. This assignment style, along with its companion non-blocking assignment operator (\texttt{<=}) can be used only within an always block and only on reg net types. You will learn more about blocking and non-blocking assignments in later courses. For now you should use strictly blocking assignments. When sequential logic is covered in future labs we will see the non-blocking operator again, and discuss the difference in detail.
+\end{extra}
+
+\clearpage
+
+\begin{question}[Dataflow 4:1 Mux Design]
+    Once you have completed your multiplexer design, compile it by going to \textbf{Processing $\longrightarrow$ Start Compilation.} This may take several minutes to complete. After compilation completes, view the compiled netlist by going to \textbf{Tools $\longrightarrow$ Netlist Vieyours $\longrightarrow$ RTL Vieyour.} \\
+    Include an image of the compiled netlist. Compare the netlist with the previous two. Note any differences you notice.
+\end{question}
+
+\begin{question}[Summarize what you've learned]
+    Briefly explain when a hardware designer might choose one modeling style over another. Provide an example scenario for each modeling style, illustrating when and why it would be the most appropriate choice.
+\end{question}
+
+\clearpage
+\section{Design Challenge}
+
+
+\textbf{Tiny Tech Inc.} builds the highest quality 2-bit computers this side of anywhere. Unfortunately, their engineers are tied up helping the marketing department an all-hands-on-deck crisis: perfecting their company logo...in MS Paint.
+
+With that critical project taking all their bandwidth, they have outsourced the extra work to you. Your task? Design a circuit for one of their cutting-edge machines, as shown in the block diagram in Fig. \ref{fig:2bitblock}. The circuit takes three input buses: \(A[1:0]\), \(B[1:0]\), and \(I[1:0]\), and the control signals \(I[1:0]\) determine the operation. Here is what they expect from you:
+
+\begin{itemize}
+  \item When \(I[1:0] = (0,0)\), the output \(F[1:0]\) is the bit-wise AND of the inputs.
+  \item When \(I[1:0] = (0,1)\), the output \(F[1:0]\) is the bit-wise OR of the inputs.
+  \item When \(I[1:0] = (1,0)\), the output \(F[1:0]\) checks for equality between the corresponding bits.
+  \item When \(I[1:0] = (1,1)\), the output \(F[1:0]\) is the bit-wise complement of \(A[1:0]\).
+\end{itemize}
+
+Now get to work! Tiny Tech is counting on you to do what their engineers are too busy to handle.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/2024_09_05_b54c49500848b4490d27g-2.jpg}
+    \caption{A 2-bit computer}
+    \label{fig:2bitblock}
+\end{figure}
+
+\begin{question}[2-bit design challenge]
+    Derive the boolean expressions for $(f_1, f_0)$ in terms of $(A_0, A_1), (B_0, B_1), (I_0, I_1)$.
+    \begin{enumerate}
+        \item Create a truth table for the expressions
+        \item Draw a circuit diagram for the design
+        \item Implement the design in verilog using any of the three modeling styles covered.
+        \item Generate a netlist diagram for your design and include it in the final report.
+    \end{enumerate}
+\end{question}
+
+\begin{bonusquestion}[Going Further]
+    Two bits isn't much to work with. For a harder challenge, enhance your design to work with 8-bit inputs. If that is still too easy, consider adding some additional operations while you are at it.
+\end{bonusquestion}
+
+\section{Lab report submissions}
+
+You are required to submit a lab report for this assignment, documenting your work in a professional format. Although there is no specific template, you can use a standard single-column technical report style. A report length of 6-10 pages is appropriate.
+
+Your lab report should include a title and list of authors. Structure the report into sections. Begin by briefly describing your design objective and approach. Include the relevant logic equations (Boolean functions) and detail any optimizations you applied. Provide a schematic of your circuit; use CAD tools to print schematics if necessary. In addition, submit your Verilog code, simulation testbenches, and the corresponding simulation results.
+
+Ensure your schematics are drawn clearly and professionally. Arrange components neatly, space wires and components evenly, eliminate wire jogs, and align components to maintain a clean layout.
+
+Include your answers to all questions provided in the lab packet as part of your report.
+
+\clearpage
+\section{Appendix}
+\label{sec:appendix}
+\subsection{Syntax}
+\subsubsection{Structural Modeling}
+\begin{longtable}{|>{\centering\arraybackslash}m{4cm}|>
+{\centering\arraybackslash}m{6cm}|>{\centering\arraybackslash}m{4cm}|}
+\hline
+\textbf{Gate Type} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endfirsthead
+\multicolumn{3}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Gate Type} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endhead
+\hline \multicolumn{3}{|c|}{{\textbf{Continued on next page}}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+AND Gate & \texttt{and (output, input1, input2, ...inputN);} & \texttt{and U1 (Y, A, B);} \\ 
+\hline
+OR Gate & \texttt{or (output, input1, input2, ...inputN);} & \texttt{or U2 (Y, A, B);} \\
+\hline
+NOT Gate & \texttt{not (output, input);} & \texttt{not U3 (Y, A);} \\
+\hline
+NAND Gate & \texttt{nand (output, input1, input2, ...inputN);} & \texttt{nand U4 (Y, A, B);} \\
+\hline
+NOR Gate & \texttt{nor (output, input1, input2, ...inputN);} & \texttt{nor U5 (Y, A, B);} \\
+\hline
+XOR Gate & \texttt{xor (output, input1, input2, ...inputN);} & \texttt{xor U6 (Y, A, B);} \\
+\hline
+XNOR Gate & \texttt{xnor (output, input1, input2, ...inputN);} & \texttt{xnor U7 (Y, A, B);} \\
+\hline
+\caption{Structural Modeling Syntax}
+\label{tab:structural}
+\end{longtable}
+
+\subsubsection{Dataflow Modeling}
+\begin{longtable}{|>{\centering\arraybackslash}m{4cm}|>{\centering\arraybackslash}m{6cm}|>{\centering\arraybackslash}m{4cm}|}
+\hline
+\textbf{Dataflow Element} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endfirsthead
+\multicolumn{3}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Dataflow Element} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endhead
+\hline \multicolumn{3}{|c|}{{\textbf{Continued on next page}}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+Continuous Assignment & \texttt{assign <net> = <expression>;} & \texttt{assign Y = A \& B;} \\ 
+\hline
+Bitwise AND & \texttt{assign <net> = <input1> \& <input2>;} & \texttt{assign Y = A \& B;} \\ 
+\hline
+Bitwise OR & \texttt{assign <net> = <input1> | <input2>;} & \texttt{assign Y = A | B;} \\
+\hline
+Bitwise NOT & \texttt{assign <net> = ~<input>;} & \texttt{assign Y = ~A;} \\
+\hline
+Bitwise XOR & \texttt{assign <net> = <input1> \^{} <input2>;} & \texttt{assign Y = A \^{} B;} \\
+\hline
+Conditional Operator & \texttt{assign <net> = (condition) ? <value1> : <value2>;} & \texttt{assign Y = (A > B) ? 1'b1 : 1'b0;} \\
+\hline
+Multiplexer (MUX) & \texttt{assign <output> = <sel> ? <input1> : <input2>;} & \texttt{assign Y = sel ? A : B;} \\
+\hline
+Arithmetic Addition & \texttt{assign <net> = <input1> + <input2>;} & \texttt{assign Y = A + B;} \\
+\hline
+Arithmetic Subtraction & \texttt{assign <net> = <input1> - <input2>;} & \texttt{assign Y = A - B;} \\
+\hline
+Logical Shift Left & \texttt{assign <net> = <input> << <shift\_amount>;} & \texttt{assign Y = A << 2;} \\
+\hline
+Logical Shift Right & \texttt{assign <net> = <input> >> <shift\_amount>;} & \texttt{assign Y = A >> 2;} \\
+\hline
+Relational Operator & \texttt{assign <net> = <input1> <op> <input2>;} & \texttt{assign Y = (A > B);} \\
+\hline
+Logical AND & \texttt{assign <net> = <input1> \&\& <input2>;} & \texttt{assign Y = A \&\& B;} \\
+\hline
+Logical OR & \texttt{assign <net> = <input1> || <input2>;} & \texttt{assign Y = A || B;} \\
+\hline
+Equality Check & \texttt{assign <net> = <input1> == <input2>;} & \texttt{assign Y = (A == B);} \\
+\hline
+Inequality Check & \texttt{assign <net> = <input1> != <input2>;} & \texttt{assign Y = (A != B);} \\
+\hline
+\caption{Dataflow Modeling}
+\label{tab:dataflow}
+\end{longtable}
+
+\subsubsection{Behavioral Modeling}
+\begin{longtable}{|>{\centering\arraybackslash}m{4cm}|>{\centering\arraybackslash}m{6cm}|>{\centering\arraybackslash}m{4cm}|}
+\hline
+\textbf{Behavioral Element} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endfirsthead
+\multicolumn{3}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Behavioral Element} & \textbf{Verilog Syntax} & \textbf{Example} \\ 
+\hline
+\endhead
+\hline \multicolumn{3}{|c|}{{\textbf{Continued on next page}}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+Always Block & \texttt{always @ (sensitivity\_list)} & \texttt{always @ (posedge clk)} \\ 
+\hline
+Blocking Assignment & \texttt{= <expression>;} & \texttt{A = B + C;} \\ 
+\hline
+Non-Blocking Assignment & \texttt{<= <expression>;} & \texttt{A <= B + C;} \\ 
+\hline
+If-Else Statement & \texttt{if (condition) begin \dots end else begin \dots end} & \texttt{if (A > B) begin Y = 1; end else begin Y = 0; end} \\
+\hline
+Case Statement & \texttt{case (expression) \dots endcase} & \texttt{case (opcode) \dots endcase} \\
+\hline
+For Loop & \texttt{for (init; condition; step) begin \dots end} & \texttt{for (i = 0; i < 8; i = i+1) begin \dots end} \\
+\hline
+Initial Block & \texttt{initial begin \dots end} & \texttt{initial begin A = 0; B = 0; end} \\ 
+\hline
+Continuous Assignment & \texttt{assign <net> = <expression>;} & \texttt{assign Y = A \& B;} \\
+\hline
+Begin-End Block & \texttt{begin \dots end} & \texttt{begin A = B + C; end} \\
+\hline
+\caption{Behavioral Modeling}
+\label{tab:behavioral}
+\end{longtable}
+
+\subsubsection{Additional Syntax}
+
+\begin{longtable}{|>{\centering\arraybackslash}m{4cm}|>{\centering\arraybackslash}m{6cm}|>{\centering\arraybackslash}m{4cm}|>{\centering\arraybackslash}m{2cm}|}
+\hline
+\textbf{Element} & \textbf{Verilog Syntax} & \textbf{Example} & \textbf{Synthesizable} \\ 
+\hline
+\endfirsthead
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Element} & \textbf{Verilog Syntax} & \textbf{Example} & \textbf{Synthesizable} \\ 
+\hline
+\endhead
+\hline \multicolumn{4}{|c|}{{\textbf{Continued on next page}}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+
+Module Declaration & \texttt{module <name> (port\_list); \dots endmodule} & \texttt{module AND\_gate (output Y, input A, B); \dots endmodule} & Yes \\
+\hline
+Module Instantiation & \texttt{<module\_name> <instance\_name> (port\_list);} & \texttt{AND\_gate U1 (Y, A, B);} & Yes \\
+\hline
+Named Port Mapping & \texttt{<module\_name> <instance\_name> (.port\_name(signal), ...);} & \texttt{AND\_gate U2 (.Y(Y), .A(A), .B(B));} & Yes \\
+\hline
+Positional Port Mapping & \texttt{<module\_name> <instance\_name> (signal1, signal2, ...);} & \texttt{AND\_gate U3 (Y, A, B);} & Yes \\
+\hline
+Input Declaration & \texttt{input <signal\_name>;} & \texttt{input A, B;} & Yes \\
+\hline
+Output Declaration & \texttt{output <signal\_name>;} & \texttt{output Y;} & Yes \\
+\hline
+Wire Declaration & \texttt{wire <signal\_name>;} & \texttt{wire w1;} & Yes \\
+\hline
+Reg Declaration & \texttt{reg <signal\_name>;} & \texttt{reg A;} & Yes \\
+\hline
+Parameter Declaration & \texttt{parameter <name> = <value>;} & \texttt{parameter WIDTH = 8;} & Yes \\
+\hline
+Localparam Declaration & \texttt{localparam <name> = <value>;} & \texttt{localparam MAX = 100;} & Yes \\
+\hline
+Vector Declaration & \texttt{<type> [msb:lsb] <name>;} & \texttt{wire [7:0] data;} & Yes \\
+\hline
+Assign Statement & \texttt{assign <net> = <expression>;} & \texttt{assign Y = A \& B;} & Yes \\
+\hline
+Concatenation & \texttt{\{<expression1>, <expression2>\}} & \texttt{assign Y = \{A, B\};} & Yes \\
+\hline
+Replication & \texttt{\{\#replication\_count\{expression\}\}} & \texttt{assign Y = \{4\{A\}\};} & Yes \\
+\hline
+Generate Block & \texttt{generate \dots endgenerate} & \texttt{generate for (i = 0; i < N; i = i+1) \dots endgenerate} & Yes \\
+\hline
+Integer Declaration & \texttt{integer <name>;} & \texttt{integer i;} & No \\
+\hline
+Constant Declaration & \texttt{<type> [msb:lsb] <constant> = <value>;} & \texttt{wire [7:0] constant = 8'b10101010;} & Yes \\
+\hline
+Instantiation of Built-in Gates & \texttt{<gate\_type> <instance\_name> (port\_list);} & \texttt{and (Y, A, B);} & Yes \\
+\hline
+Parameter Override & \texttt{\#(<param1\_value>, <param2\_value>)} & \texttt{module\_name \#(10, 20) U1 (...);} & Yes \\
+\hline
+Tri-State Buffer & \texttt{assign <output> = en ? <input> : 1'bz;} & \texttt{assign Y = en ? A : 1'bz;} & Yes \\
+\hline
+Gate-level Primitive & \texttt{and, or, nand, nor, xor, xnor, not} & \texttt{and U1 (Y, A, B);} & Yes \\
+\hline
+Delay Statement (For Gate Delays) & \texttt{\#delay <statement>} & \texttt{assign \#5 Y = A \& B;} & No \\
+\hline
+Signed Arithmetic & \texttt{signed [msb:lsb] <name>;} & \texttt{signed [7:0] A;} & Yes \\
+\hline
+Bus Declaration & \texttt{<type> [msb:lsb] <name>;} & \texttt{wire [7:0] bus;} & Yes \\
+\hline
+Range Selection & \texttt{<signal>[msb:lsb]} & \texttt{Y = data[7:0];} & Yes \\
+\hline
+Part Select & \texttt{<signal>[msb:lsb]} & \texttt{Y = data[7:4];} & Yes \\
+\hline
+Arithmetic Operations & \texttt{<operand1> + <operand2>} & \texttt{assign Y = A + B;} & Yes \\
+\hline
+Logical Operations & \texttt{<operand1> \& <operand2>} & \texttt{assign Y = A \& B;} & Yes \\
+\hline
+\caption{Misc. Syntax}
+\label{tab:misc}
+\end{longtable}
+
+\end{document}
+
+
+\end{document}
