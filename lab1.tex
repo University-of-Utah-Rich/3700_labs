@@ -35,7 +35,7 @@
 \usepackage{xstring}
 \usepackage{tikz}
 \usepackage[framemethod=TikZ]{mdframed}
-
+\graphicspath{{images/install_guide}{images/l1}}
 % Reduce left and right margins
 \geometry{
   left=2cm,  % Adjust the left margin
@@ -167,9 +167,6 @@
 \lstdefineformat{V}{~=\( \sim \)}
 
 \lstset{style=mystyle, format=V, numbers=none}
-
-
-\graphicspath{ {./images/} }
 
 \title{Lab Assignment 1 }
 
@@ -383,7 +380,7 @@ The block diagram of the multiplexer is given in Figure \ref{fig:41mux}. Multipl
 \begin{multicols}{2}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\columnwidth]{images/4to1multi.png}
+    \includegraphics[width=\columnwidth]{4to1multi.png}
     \caption{4:1 Multiplexer schematic}
     \label{fig:41muxschem}
 \end{figure}
@@ -430,7 +427,7 @@ lab_1
 Once you have created your project folders, launch Quartus. When you first launch Quartus, you will be greeted with a welcome screen that prompts you to open or create a new project. Choose "New Project Wizard".
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\columnwidth]{images/newproject.png}
+    \includegraphics[width=\columnwidth]{newproject.png}
 \end{figure}
 \end{paracol}
 
@@ -439,21 +436,21 @@ Continue past the first prompt and you will be asked to specify the location for
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\columnwidth]{images/project_settings.png}
+    \includegraphics[width=\columnwidth]{project_settings.png}
 \end{figure}
 
 For the type of project on the next prompt, select "empty project" and continue. In the next prompt, you will be asked to add existing files to the project. Use the file browser to select the hdl/top.v file you created above and continue.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{images/addfiles.png}
+    \includegraphics[width=0.5\linewidth]{addfiles.png}
 \end{figure}
 
 The final step is the selection of the board. In this window, there are two tabs, "Device" and "Board"; switch to the "Board" tab. In this tab, ensure that the family is set to Max 10 and select the "Max DE10 - Lite" board. In the bottom-left corner of the tab interface is a checkbox labeled "create top-level design file"; deselect it.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{images/quartus_board.png}
+    \includegraphics[width=\linewidth]{quartus_board.png}
 \end{figure}
 
 After you have selected your board, you can continue through the remaining prompts without changing any options. Once you select finish, you may be faced with a warning to only open projects from trusted sources. If so, press "Yes".
@@ -462,7 +459,7 @@ Now in the project editor view you will see a gray screen with the words "Quartu
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{images/project_nav.png}
+    \includegraphics[width=0.5\linewidth]{project_nav.png}
 \end{figure}
 
 \subsubsection{Top-Level Entity}
@@ -471,7 +468,7 @@ You should have only one file in this view, the top.v file you created earlier. 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{images/toplevel.png}
+    \includegraphics[width=\linewidth]{toplevel.png}
 \end{figure}
 
 
@@ -598,7 +595,7 @@ The top-level entity is a module just like everything else in verilog. The conve
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{images/image_2024-09-26_224700848.png}
+    \includegraphics[width=0.5\linewidth]{image_2024-09-26_224700848.png}
     \caption{Block diagram of LMx24-N, LM2902-N Low-Poyour, Quad-Operational Amplifiers \\
     \tiny{Copyright © 2000–2015, Texas Instruments Incorporated}}
     \label{fig:lm324n}
@@ -780,7 +777,7 @@ Now get to work! Tiny Tech is counting on you to do what their engineers are too
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{images/2024_09_05_b54c49500848b4490d27g-2.jpg}
+    \includegraphics[width=0.5\linewidth]{2024_09_05_b54c49500848b4490d27g-2.jpg}
     \caption{A 2-bit computer}
     \label{fig:2bitblock}
 \end{figure}

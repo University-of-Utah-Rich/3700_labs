@@ -41,6 +41,7 @@
 \usepackage{enumitem}
 \usepackage{flafter}
 
+
 \NewDocumentCommand{\directions}{>{\SplitList{,}}m}{%
   \begingroup
   \bfseries
@@ -209,7 +210,7 @@
 \lstset{style=mystyle, format=V, numbers=none}
 
 
-\graphicspath{ {./images/} }
+\graphicspath{ {./images/l2} }
 
 \title{Lab Assignment 2 }
 
@@ -481,7 +482,7 @@ And has two outputs:
 A full adder is created by combining two half adders in series as previously mentioned. \autoref{fig:fadder} is taken from chapter 3 in the textbook and depicts the decomposition of a full adder. \autoref{tab:full_adder_tt} provides the truth table for a single-bit full adder.
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{images/fulladderdiagram.png}
+    \includegraphics[width=1\linewidth]{fulladderdiagram.png}
     \caption{A decomposed implementation of the full-adder circuit. $c$ is the textbook notation for what the lab refers to as $\text{c}_\text{out}$. $s$ is the textbook notation for sum and $c_i$ is the carry in bit from a previous stage.}
     \label{fig:fadder}
 \end{figure}
@@ -774,7 +775,7 @@ Before we can access the pin planner, we need to compile the design. Go to\direc
 Once the compilation is complete you can access the pin planner through \directions{Assignments, Pin Planner}. This will open a new window that looks something like \autoref{fig:pinplanner}. Your window will not be filled as shown in the image. We will address that now. \hfill\break
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{images/pinplanner.png}
+    \includegraphics[width=\linewidth]{pinplanner.png}
     \caption{Pin Planner Interface}
     \label{fig:pinplanner}
 \end{figure}
@@ -786,7 +787,7 @@ At the bottom of the interface is a table of inputs and outputs defined in your 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{images/pinplannerpins.png}
+    \includegraphics[width=\linewidth]{pinplannerpins.png}
     \caption{List of pin assignments}
     \label{fig:pinlist}
 \end{figure}
@@ -805,7 +806,7 @@ In the compilation report you will notice a table of contents pane. In that pane
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{images/spacereport.png}
+    \includegraphics[width=\linewidth]{spacereport.png}
     \caption{Partition Statistics Report}
     \label{fig:partstats}
 \end{figure}
@@ -825,7 +826,7 @@ Every FPGA has a finite number of logic elements made up of a collection of NAND
 Close the fitter folder and go to \directions{Logic Analyzer, Unconstrained Paths, Summary}. Your report should look something like \autoref{fig:unconstrainedpaths}. The Unconstrained Paths folder is in red, indicating a potential problem. 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{images/unconstrainedpaths.png}
+    \includegraphics[width=\linewidth]{unconstrainedpaths.png}
     \caption{Unconstrained Paths Report}
     \label{fig:unconstrainedpaths}
 \end{figure}
@@ -847,7 +848,7 @@ Before we can add constraints we need to tell the timing analyzer about our desi
     \begin{tikzpicture}
         \node[anchor=center] (img1) at (0,0) {
             \begin{subfigure}{0.7\textwidth}
-                \includegraphics[width=\linewidth]{images/timinganalyzer.png}
+                \includegraphics[width=\linewidth]{timinganalyzer.png}
                 \caption{Timing Analyzer Window}
                 \label{fig:timinganalyzer}
             \end{subfigure}
@@ -855,7 +856,7 @@ Before we can add constraints we need to tell the timing analyzer about our desi
         \hfill
         \node[anchor=center] (img2) at (8cm,0) {  % Adjust 8cm to control spacing
             \begin{subfigure}{0.2\textwidth}
-                \includegraphics[width=\linewidth]{images/timingtasks.png}
+                \includegraphics[width=\linewidth]{timingtasks.png}
                 \caption{Timing Analyzer Tasks}
                 \label{fig:timingtasks}
             \end{subfigure}
@@ -875,13 +876,13 @@ To determine a reasonable constraint, we will first check what the current maxim
     \begin{figure}[H]
     \centering
     \begin{subfigure}{\linewidth}
-        \includegraphics[width=\linewidth]{images/reportpath.png}
+        \includegraphics[width=\linewidth]{reportpath.png}
         \caption{Create Timing Report}
         \label{fig:timingreportconfig}
     \end{subfigure}
     \vspace{2mm}
     \begin{subfigure}{\linewidth}
-        \includegraphics[width=\linewidth]{images/nameselection.png}
+        \includegraphics[width=\linewidth]{nameselection.png}
         \caption{Name Finder}
         \label{fig:namefinder}
     \end{subfigure}
@@ -922,13 +923,13 @@ Press the \keyword{Incr} header in the table to sort by the individual step leng
 \begin{figure}
     \begin{tikzpicture}
         \node (fig1) {
-            {\includegraphics[width=\linewidth]{images/pathreport.png}}
+            {\includegraphics[width=\linewidth]{pathreport.png}}
         };
         
         % Create a box with shadow for the image
         \node[blur shadow={shadow xshift=-3pt, shadow yshift=-3pt, 
               shadow blur steps=8}] (shadowimg) at ([xshift=5cm,yshift=-3cm]fig1.center) 
-            {\includegraphics[width=0.5\linewidth]{images/pathsummaryreport.png}};
+            {\includegraphics[width=0.5\linewidth]{pathsummaryreport.png}};
             
         % Place the caption below the shadowed image
         \node[below=1mm of shadowimg] (captiona) {
@@ -949,7 +950,7 @@ Press the \keyword{Incr} header in the table to sort by the individual step leng
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{images/techmap.png}
+    \includegraphics[width=\linewidth]{techmap.png}
     \caption{Technology Map View}
     \label{fig:techmap}
 \end{figure}
@@ -980,13 +981,13 @@ To put your design on the FPGA go to: \directions{Tools, Programmer}. This will 
 \begin{figure}[htbp!]
     \centering
     \begin{subfigure}{0.45\textwidth}    
-    \includegraphics[width=1\linewidth]{images/programmer.png}
+    \includegraphics[width=1\linewidth]{programmer.png}
     \caption{Programmer}
     \label{fig:programmer}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.45\textwidth}
-        \includegraphics[width=1\linewidth]{images/hardwaresetup.png}
+        \includegraphics[width=1\linewidth]{hardwaresetup.png}
         \caption{Hardware Setup}
         \label{fig:hardwaresetup}
     \end{subfigure}
