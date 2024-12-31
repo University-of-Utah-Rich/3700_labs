@@ -1,0 +1,498 @@
+\documentclass[12pt]{betterjournal}
+
+
+\title{Lab Assignment 3}
+\author{}
+\date{}
+
+% Set custom header
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{ECE/CS 3700}
+\fancyhead[L]{Lab 3: Combinational Design Using Always Blocks}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+In this one-week laboratory exercise, you will gain hands-on experience designing combinational circuits using Verilog's always blocks. While previous labs focused on gate-level primitives and continuous assign statements, this lab introduces behavioral modeling using \keyword{always @()} constructs.
+
+\begin{extra}[frametitle={Required Reading}]
+Before beginning this lab, review Textbook Section 4.6: Verilog Operators
+\end{extra}
+
+The primary objectives of this lab are to:
+\begin{enumerate}
+    \item Design and implement a configurable 4-bit comparator using always blocks
+    \item Practice behavioral modeling techniques in Verilog
+    \item Verify design correctness through simulation and synthesis analysis
+\end{enumerate}
+
+Throughout this lab, you will learn how to:
+\begin{itemize}
+    \item Write combinational logic using always blocks
+    \item Handle signed and unsigned number comparisons
+    \item Create comprehensive testbenches for verification
+    \item Analyze synthesis results for combinational correctness
+\end{itemize}
+
+\section{Background: Two's Complement Numbers and Comparison}
+
+\subsection{Two's Complement Representation}
+
+Two's complement is a method for representing signed integers that allows both positive and negative numbers to be handled using the same hardware for addition and subtraction. For a 4-bit number:
+\begin{itemize}
+    \item The most significant bit (MSB) acts as the sign bit (0 for positive, 1 for negative)
+    \item Positive numbers are represented in standard binary (0000 to 0111)
+    \item Negative numbers are represented by inverting all bits and adding 1
+\end{itemize}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Decimal} & \textbf{Binary} & \textbf{Notes} \\
+    \hline
+    +7 & 0111 & Maximum positive number \\
+    +6 & 0110 & \\
+    +5 & 0101 & \\
+    +4 & 0100 & \\
+    +3 & 0011 & \\
+    +2 & 0010 & \\
+    +1 & 0001 & \\
+    0 & 0000 & Zero \\
+    -1 & 1111 & \\
+    -2 & 1110 & \\
+    -3 & 1101 & \\
+    -4 & 1100 & \\
+    -5 & 1011 & \\
+    -6 & 1010 & \\
+    -7 & 1001 & \\
+    -8 & 1000 & Minimum negative number \\
+    \hline
+    \end{tabular}
+    \caption{4-bit Two's Complement Number Representation}
+    \label{tab:twos_complement}
+\end{table}
+
+\subsection{Comparison Through Subtraction}
+
+\begin{important}[frametitle={Key Concept}]
+The most reliable way to compare two numbers A and B is to perform subtraction (A - B) and examine the result:
+\begin{itemize}
+    \item If (A - B) > 0: A > B
+    \item If (A - B) = 0: A = B
+    \item If (A - B) < 0: A < B
+\end{itemize}
+This approach works for both unsigned and two's complement numbers!
+\end{important}
+
+\subsection{Understanding Subtraction Results}
+
+When performing A - B:
+\begin{enumerate}
+    \item For unsigned numbers:
+    \begin{itemize}
+        \item The presence of a carry-out indicates A $\geq$ B
+        \item The absence of a carry-out indicates A < B
+    \end{itemize}
+    \item For two's complement numbers:
+    \begin{itemize}
+        \item The sign bit of the result indicates the relationship
+        \item A zero result indicates equality
+    \end{itemize}
+\end{enumerate}
+
+\begin{extra}[frametitle={Implementation Example}]
+Consider comparing A = 0101 (5) and B = 0011 (3):
+
+\textbf{Unsigned Subtraction:}
+\begin{verbatim}
+  0101 (A)
+- 0011 (B)
+-------
+  0010 with carry-out = 1
+\end{verbatim}
+Carry-out = 1 indicates A > B
+
+\textbf{Two's Complement Subtraction:}
+\begin{verbatim}
+  0101 (A)
+- 0011 (B)
+-------
+  0010 (positive result)
+\end{verbatim}
+Positive result indicates A > B
+\end{extra}
+
+\begin{important}[frametitle={Design Consideration}]
+Your comparator can use a single subtraction operation and then interpret the result based on:
+\begin{itemize}
+    \item The control input c
+    \item The carry-out (for unsigned mode)
+    \item The sign bit of the result (for signed mode)
+\end{itemize}
+\end{important}
+
+\subsection{Implementation Strategy}
+
+To implement the comparator:
+\begin{enumerate}
+    \item Perform the subtraction A - B
+    \item Based on control input c:
+    \begin{itemize}
+        \item c = 0: Use carry-out to determine relationship
+        \item c = 1: Use result's sign bit to determine relationship
+    \end{itemize}
+    \item Set F1, F2, F3 based on the interpretation
+\end{enumerate}
+
+\begin{question}[Subtraction-Based Comparison]
+Work through these examples:
+\begin{enumerate}
+    \item Calculate A - B for A = 1100, B = 0100:
+    \begin{itemize}
+        \item Show the subtraction process
+        \item Interpret the result for both unsigned and signed modes
+        \item Determine F1, F2, F3 for each mode
+    \end{itemize}
+    \item Repeat for A = 1000, B = 0111
+    \item Explain why this method is more reliable than using comparison operators
+\end{enumerate}
+\end{question}
+
+\begin{extra}[frametitle={Common Pitfalls to Avoid}]
+\begin{itemize}
+    \item Don't use separate logic paths for signed/unsigned comparisons
+    \item Don't rely on Verilog's comparison operators
+    \item Remember to handle the equality case (A = B) separately
+    \item Ensure proper bit widths in subtraction to capture carry-out
+\end{itemize}
+\end{extra}
+
+\section{Behavioral Verilog and Always Blocks}
+
+\subsection{Understanding Always Blocks}
+
+An always block is a fundamental construct in Verilog that allows behavioral description of circuits. Unlike continuous assignments (\texttt{assign} statements) which describe concurrent behavior, always blocks describe sequential evaluation of statements.
+
+\begin{important}[frametitle={Always Block Structure}]
+An always block contains three crucial parts:
+\begin{enumerate}
+    \item The sensitivity list: \textbf{\texttt{always @(*)}}
+    \item The block opener: \textbf{\texttt{begin}}
+    \item The logic to be performed 
+    \item The block closer: \textbf{\texttt{end}}
+\end{enumerate}
+\end{important}
+
+\subsection{Sensitivity Lists}
+
+The sensitivity list tells the compiler which signals should trigger the evaluation of the always block:
+
+\begin{lstlisting}[language=verilog]
+// Explicit sensitivity list
+always @(a or b or sel) 
+// Implicit sensitivity list (preferred)
+always @(*)
+\end{lstlisting}
+
+\begin{extra}[frametitle={Sensitivity List Best Practices}]
+\begin{itemize}
+    \item Use \texttt{@(*)} for combinational logic
+    \item Include ALL inputs that affect outputs in explicit lists
+    \item Missing signals in explicit lists can create latches
+    \item For combinational logic, never use clock edges
+\end{itemize}
+\end{extra}
+
+\subsection{Wires vs Regs}
+
+\begin{important}[frametitle={Understanding Nets}]
+In Verilog, signals are passed between gates and modules using \textbf{nets}:
+\begin{itemize}
+    \item \textbf{\texttt{wire}}: Represents physical connections
+    \begin{itemize}
+        \item Can only be driven by continuous assignments
+        \item Cannot store values
+        \item Used with \texttt{assign} statements
+    \end{itemize}
+    \item \textbf{\texttt{reg}}: Represents storage elements
+    \begin{itemize}
+        \item Required for always block outputs
+        \item Does NOT necessarily create flip-flops
+        \item Cannot be driven by continuous assignments
+    \end{itemize}
+\end{itemize}
+\end{important}
+
+\begin{extra}[frametitle={Common Misconception}]
+The \texttt{reg} keyword does NOT automatically create a register or flip-flop! It simply indicates that the signal can hold a value between always block evaluations. The actual hardware implementation depends on how the signal is used.
+\end{extra}
+
+\subsection{Avoiding Common Pitfalls}
+
+\subsubsection{Preventing Latches}
+
+Latches are often created unintentionally when the compiler detects the need to "remember" a value.
+
+\begin{important}[frametitle={Latch Prevention}]
+To avoid latches:
+\begin{enumerate}
+    \item Assign values to ALL outputs in ALL possible conditions
+    \item Use complete if-else structures
+    \item Include default assignments
+    \item Use complete case statements with default
+\end{enumerate}
+\end{important}
+
+Example of latch creation:
+\begin{lstlisting}[language=verilog]
+// BAD: Creates a latch
+always @(*) begin
+    if (sel) 
+        y = a;
+end
+
+// GOOD: No latch
+always @(*) begin
+    if (sel)
+        y = a;
+    else
+        y = b;
+end
+\end{lstlisting}
+
+\subsubsection{Avoiding Multiple Drivers}
+
+A signal in Verilog can only have one driver to prevent hardware conflicts.
+
+\begin{important}[frametitle={Multiple Driver Rules}]
+\begin{itemize}
+    \item A signal cannot be driven by both an always block and an assign statement
+    \item A signal cannot be driven by multiple always blocks
+    \item Each reg can only be assigned in one always block
+\end{itemize}
+\end{important}
+
+Example of multiple driver conflicts:
+\begin{lstlisting}[language=verilog]
+// BAD: Multiple drivers
+assign y = a & b;
+always @(*) begin
+    y = c & d;  // Conflict!
+end
+
+// GOOD: Single driver
+always @(*) begin
+    y = (sel) ? (a & b) : (c & d);
+end
+\end{lstlisting}
+
+\subsection{Behavioral Constructs}
+
+Inside always blocks, you can use various behavioral constructs:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Construct} & \textbf{Usage} \\
+    \hline
+    if-else & Conditional execution \\
+    case & Multiple condition selection \\
+    ?: operator & Conditional assignment \\
+    blocking assignment (=) & Sequential evaluation \\
+    \hline
+    \end{tabular}
+    \caption{Common Behavioral Constructs}
+    \label{tab:constructs}
+\end{table}
+
+Example of proper behavioral coding:
+\begin{lstlisting}[language=verilog]
+always @(*) begin
+    // Default assignments prevent latches
+    y1 = 0;
+    y2 = 0;
+    y3 = 0;
+    
+    case (sel)
+        2'b00: y1 = a & b;
+        2'b01: y2 = c | d;
+        2'b10: y3 = e ^ f;
+        default: begin
+            y1 = 0;
+            y2 = 0;
+            y3 = 0;
+        end
+    endcase
+end
+\end{lstlisting}
+
+\begin{question}[Behavioral Coding Practice]
+Identify and fix the problems in this code:
+\begin{lstlisting}[language=verilog]
+always @(sel) begin
+    if (sel == 1)
+        out = in1;
+    else if (sel == 0)
+        out = in2;
+end
+
+always @(*) begin
+    out = in3 & in4;
+end
+\end{lstlisting}
+\end{question}
+
+\begin{extra}[frametitle={Design Guidelines}]
+\begin{itemize}
+    \item Initialize all outputs at the start of the always block
+    \item Use explicit width for numbers (4'b0000 vs 0)
+    \item Keep logic within a single always block when possible
+    \item Use meaningful signal names
+    \item Comment your code thoroughly
+\end{itemize}
+\end{extra}
+
+\section{Design Specifications}
+
+\subsection{Functional Requirements}
+
+Design a configurable 4-bit comparator with the following interface:
+
+\begin{important}[frametitle={Interface Specification}]
+\textbf{Inputs:}
+\begin{itemize}
+    \item \textbf{A[3:0]}: First 4-bit input vector
+    \item \textbf{B[3:0]}: Second 4-bit input vector
+    \item \textbf{c}: Control input for number interpretation
+    \begin{itemize}
+        \item c = 0: Treat A,B as unsigned numbers
+        \item c = 1: Treat A,B as two's complement numbers
+    \end{itemize}
+\end{itemize}
+
+\textbf{Outputs:}
+\begin{itemize}
+    \item \textbf{F1}: Greater than indicator (A > B)
+    \item \textbf{F2}: Equal to indicator (A = B)
+    \item \textbf{F3}: Less than indicator (A < B)
+\end{itemize}
+\end{important}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{Condition} & \textbf{F1} & \textbf{F2} & \textbf{F3} \\
+    \hline
+    A > B & 1 & 0 & 0 \\
+    A = B & 0 & 1 & 0 \\
+    A < B & 0 & 0 & 1 \\
+    \hline
+    \end{tabular}
+    \caption{Truth table for comparator outputs}
+    \label{tab:truth_table}
+\end{table}
+
+\section{Implementation Guidelines}
+
+\begin{extra}[frametitle={Design Approach}]
+Your implementation must follow these requirements:
+\begin{itemize}
+    \item The entire design must be implemented within a single always block
+    \item Use appropriate Verilog operators for comparison operations
+    \item Consider edge cases for both signed and unsigned comparisons
+    \item Ensure mutually exclusive output conditions
+\end{itemize}
+\end{extra}
+
+Sample code structure:
+\begin{lstlisting}[language=Verilog]
+module comparator(
+    input [3:0] A,
+    input [3:0] B,
+    input c,
+    output reg F1,
+    output reg F2,
+    output reg F3
+);
+
+always @(*) begin
+    // Your implementation here
+end
+
+endmodule
+\end{lstlisting}
+
+\begin{important}[frametitle={Common Pitfalls}]
+\begin{itemize}
+    \item Ensure all outputs are assigned in all possible conditions to avoid latches
+    \item Poor always block implementation may result in incorrect hardware generation
+    \item Remember to handle both signed and unsigned cases correctly
+\end{itemize}
+\end{important}
+
+\section{Assignment Tasks}
+
+\begin{question}[Design Implementation]
+\begin{enumerate}
+    \item Implement the comparator using a single always block
+    \item Document your design decisions and approach
+    \item Include commented Verilog code
+\end{enumerate}
+\end{question}
+
+\begin{question}[Verification]
+\begin{enumerate}
+    \item Create a comprehensive testbench that verifies:
+    \begin{itemize}
+        \item All comparison cases (>, =, <)
+        \item Both unsigned and signed modes
+        \item Corner cases (maximum/minimum values)
+        \item Transitions between modes
+    \end{itemize}
+    \item Provide waveform screenshots showing critical test cases
+    \item Document test coverage
+\end{enumerate}
+\end{question}
+
+\begin{question}[Synthesis Analysis]
+\begin{enumerate}
+    \item Include schematic capture from synthesis
+    \item Report and explain:
+    \begin{itemize}
+        \item Resource utilization (LABs and LEs/LUTs)
+        \item Propagation delay
+        \item Verification of combinational implementation (no latches)
+    \end{itemize}
+\end{enumerate}
+\end{question}
+
+\section{Submission Requirements}
+Your lab report should include:
+\begin{enumerate}
+    \item Verilog source code (design and testbench)
+    \item Simulation results and waveforms
+    \item Synthesis reports and schematics
+    \item Written responses to all questions
+    \item Analysis of results
+\end{enumerate}
+
+\begin{extra}[frametitle={Time Management}]
+Estimated time allocation:
+\begin{itemize}
+    \item Design Implementation: 1 hour
+    \item Testbench Development: 1 hour
+    \item Simulation and Debug: 1 hour
+    \item Synthesis Analysis: 30 minutes
+    \item Documentation: 30 minutes
+\end{itemize}
+Total Estimated Time: 4 hours
+\end{extra}
+
+\end{document}
