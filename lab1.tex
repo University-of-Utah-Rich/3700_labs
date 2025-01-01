@@ -1,172 +1,5 @@
-\documentclass[12pt]{journal}
-\usepackage[utf8x]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage[version=4]{mhchem}
-\usepackage{stmaryrd}
-\usepackage{graphicx}
-\usepackage[export]{adjustbox}
-\usepackage{fancyhdr}
-\usepackage{verbatim}
-\usepackage[formats]{listings}
-\usepackage{xcolor}
-\usepackage{float}
-\usepackage{newfloat}
-\usepackage{array}
-\usepackage{fancyvrb}
-\usepackage{makecell}
-\usepackage{multicol}
-\usepackage{bold-extra} % Provides bold support for monospaced fonts
-\usepackage{chngpage}
-\usepackage{geometry}
-\usepackage{paracol}
-\usepackage{fancyhdr}
-\usepackage{longtable}
-\usepackage{caption} % For table numbering
-\usepackage{soul}
-\usepackage{varioref}
-\usepackage{wrapfig}
-
-
-% Define the new aside environment style without arrows
-\usepackage{xparse}
-\usepackage{xstring}
-\usepackage{tikz}
-\usepackage[framemethod=TikZ]{mdframed}
-\graphicspath{{images/install_guide}{images/l1}}
-% Reduce left and right margins
-\geometry{
-  left=2cm,  % Adjust the left margin
-  right=2cm, % Adjust the right margin (leaving space for the right column)
-  top=2.5cm,
-  bottom=2.5cm
-}
-
-\definecolor{black}{rgb}{0,0,0}
-\definecolor{yellow}{rgb}{1, 0.89, 0.36}
-\definecolor{blue}{rgb}{0.49803922, 0.78431373, 0.97254902}
-\newcommand{\keyword}[1]{{\usefont{OT1}{lmtt}{b}{n}#1}}
-
-
-
-
-% Define a counter for the question environment
-\newcounter{questioncounter}
-
-% Define a custom environment that wraps around mdframed and accepts a custom title argument
-\NewDocumentEnvironment{question}{o}{ % [o] denotes an optional argument
-  \stepcounter{questioncounter} % Increment the counter
-  \begin{mdframed}[
-    backgroundcolor=yellow!40,
-    roundcorner=10pt,
-    linewidth=1pt,
-    linecolor=black, % Set border color to black
-    frametitlebackgroundcolor=yellow!50, % Match background color for title
-    frametitleaboveskip=10pt,
-    frametitlebelowskip=5pt,
-    frametitlerule=false, % Ensure a black border under the title
-    frametitlerulecolor=black, % Set title border color to black
-    frametitle={Question \thequestioncounter: \IfNoValueTF{#1}{Default Title}{#1}} % If no title, use "Default Title"
-  ]
-}{
-\end{mdframed}
-}
-
-\newcounter{bonusquestioncounter}
-\NewDocumentEnvironment{bonusquestion}{o}{ % [o] denotes an optional argument
-  \stepcounter{bonusquestioncounter} % increment the counter for bonusquestion
-  \begin{mdframed}[
-    backgroundcolor=yellow!40,
-    roundcorner=10pt,
-    linewidth=1pt,
-    linecolor=black, % Set border color to black
-    frametitlebackgroundcolor=yellow!50, % Match background color for title
-    frametitleaboveskip=10pt,
-    frametitlebelowskip=5pt,
-    frametitlerule=false, % Ensure a black border under the title
-    frametitlerulecolor=black, % Set title border color to black
-    frametitle={Bonus Question \thebonusquestioncounter: \IfNoValueTF{#1}{Default Title}{#1}} % If no title, use "Default Title"
-  ]
-}{
-\end{mdframed}
-}
-
-\NewDocumentEnvironment{aside}{O{0.7,0.3}O{right}O{}}{%
-  \par\noindent%
-  \columnratio{#1}%
-  \begin{paracol}{2}%
-  \IfStrEqCase{#2}{%
-    {left}{\switchcolumn[0]}%
-    {right}{\switchcolumn[1]}%
-  }
-  \begin{extra}[frametitle=#3]%
-}{%
-  \end{extra}%
-  \IfStrEqCase{#2}{%
-    {left}{\switchcolumn[1]}%
-    {right}{\switchcolumn[0]}%
-  }
-  \end{paracol}%
-  \par%
-}
-
-\newmdenv[
-  backgroundcolor=blue!50,
-  roundcorner=10pt,
-  linewidth=1pt,
-  linecolor=black, % Set border color to black
-  frametitlebackgroundcolor=blue!60, % Match background color for title
-  frametitleaboveskip=10pt,
-  frametitlebelowskip=5pt,
-  frametitlerule=false, % Ensure a black border under the title
-  frametitlerulecolor=red % Set title border color to black
-]{extra}
-
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-
-\lstdefinestyle{console}{
-    keywordstyle=\color{black},
-    commentstyle=\color{codegray},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2
-}
-
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{backcolour},   
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2
-}
-
-\lstdefineformat{V}{~=\( \sim \)}
-
-\lstset{style=mystyle, format=V, numbers=none}
+\documentclass[12pt]{labmanual}
+\graphicspath{{images/l1}}
 
 \title{Lab Assignment 1 }
 
@@ -230,8 +63,8 @@ endmodule
 
 Verilog uses two main data types for signals, often referred to as nets:
 \begin{itemize}
-    \item {\textbf{\texttt{wire}}: Represents a physical wire connecting components. Its value is continuously driven.}
-    \item {\textbf{\texttt{reg}}: Short for register. Represents a memory element. It retains its value until a new value is assigned.}
+    \item {\code{wire}: Represents a physical wire connecting components. Its value is continuously driven.}
+    \item {\code{reg}: Short for register. Represents a memory element. It retains its value until a new value is assigned.}
 \end{itemize}
 
 \subsection{Operators}
@@ -253,8 +86,8 @@ assign y = a & b;  // y is the AND of a and b
 \subsection{Assignments}
 There are two types of assignments in Verilog:
 \begin{itemize}
-  \item Continuous assignments (using \texttt{assign}): Used for combinational logic.
-  \item Procedural assignments (inside \texttt{always} blocks): Used for sequential logic.
+  \item Continuous assignments (using \code{assign}): Used for combinational logic.
+  \item Procedural assignments (inside \code{always} blocks): Used for sequential logic.
 \end{itemize}
 
 \subsection{Behavioral Descriptions}
@@ -272,11 +105,11 @@ end
 \subsection{Connecting to Boolean Logic}
 The boolean expressions you've learned in class directly translate to Verilog:
 \begin{itemize}
-  \item Boolean AND (\texttt{A·B}) becomes \texttt{A \& B} in Verilog
-  \item Boolean OR (\texttt{A+B}) becomes \texttt{A | B} in Verilog
-  \item Boolean NOT (\texttt{A'}) becomes \texttt{\textasciitilde A} in Verilog
+  \item Boolean AND (\code{A·B}) becomes \code{A \& B} in Verilog
+  \item Boolean OR (\code{A+B}) becomes \code{A | B} in Verilog
+  \item Boolean NOT (\code{A'}) becomes \code{\textasciitilde A} in Verilog
 \end{itemize}
-For example, the boolean expression \texttt{Y = A·B + C'} would be written in Verilog as:
+For example, the boolean expression \code{Y = A·B + C'} would be written in Verilog as:
 \begin{lstlisting}[language=verilog]
 assign Y = (A & B) | (~C);
 \end{lstlisting}
@@ -528,17 +361,17 @@ Let us review what you have written and understand it better. The word \keyword{
 \noindent
 Recall that modules encapsulate logic by exposing only the inputs and outputs. The keyword \keyword{input} defines all inputs that the module can accept. If you need to access a signal from somewhere outside of your module, you will define an input for it. As you might expect, the keyword \keyword{output} defines the output of the module, and just like the input, anything that is meant to be sent from this module to somewhere else in the program will have an output defined for it. The keyword \keyword{endmodule} is required to indicate to the compiler where the module ends and \keyword{wire} defines the type of node you are using for our inputs and outputs, which you will explain in more detail later on.
 \end{paracol}
-You may notice striking similarities between this code and the code for top.v above. This is not a coincidence. The inputs and outputs used by \texttt{Mux41Structural} will need to come from somewhere. By using corresponding inputs and outputs in our top-level module, you are prepared to use the physical inputs and outputs (IO) from the FPGA board for this purpose. You will not actually be connecting our modules to the board in this lab, but you will do so in future labs where you will explain the processes in more detail.
+You may notice striking similarities between this code and the code for top.v above. This is not a coincidence. The inputs and outputs used by \code{Mux41Structural} will need to come from somewhere. By using corresponding inputs and outputs in our top-level module, you are prepared to use the physical inputs and outputs (IO) from the FPGA board for this purpose. You will not actually be connecting our modules to the board in this lab, but you will do so in future labs where you will explain the processes in more detail.
 
 
 Right now our module does not do anything. You could pass input signals to it and you would always get a floating signal as an output. Let us fix that by implementing the logic above. Refer to figure \vref{fig:41muxschem} if you need to jog your memory.
 \clearpage
 \begin{extra}[frametitle={On nets: wires and regs}]
-    In Verilog, signals are passed betyouen gates and modules using \textbf{nets} instead of variables. There are two primary types of nets: \textbf{wires}, declared with the \texttt{wire} keyword, and \textbf{regs}, declared with the \texttt{reg} keyword. The wires are used to represent the connections and can only be assigned a value through a continuous assignment using the \texttt{assign} keyword. Once assigned, a wire always reflects the value of the assigned expression and cannot be reassigned. On the other hand, \textbf{regs} are stateful and act like simple memory. Unlike wires, \textbf{regs} can be assigned and reassigned multiple times, but only within an \texttt{always} block. --- Always blocks are addressed in detail in the section on behavioral modeling. --- Once an \texttt{always} block controls a reg, it "owns" it, meaning that only that block can modify its value. To avoid conflicts, only one \texttt{always} block should be responsible for assigning a value to any particular reg.
+    In Verilog, signals are passed betyouen gates and modules using \textbf{nets} instead of variables. There are two primary types of nets: \textbf{wires}, declared with the \code{wire} keyword, and \textbf{regs}, declared with the \code{reg} keyword. The wires are used to represent the connections and can only be assigned a value through a continuous assignment using the \code{assign} keyword. Once assigned, a wire always reflects the value of the assigned expression and cannot be reassigned. On the other hand, \textbf{regs} are stateful and act like simple memory. Unlike wires, \textbf{regs} can be assigned and reassigned multiple times, but only within an \code{always} block. --- Always blocks are addressed in detail in the section on behavioral modeling. --- Once an \code{always} block controls a reg, it "owns" it, meaning that only that block can modify its value. To avoid conflicts, only one \code{always} block should be responsible for assigning a value to any particular reg.
 \end{extra}
 
 \begin{extra}[frametitle={bus notation}]
-    In the module code, inputs \textbf{\texttt{s}} and \textbf{\texttt{d}} are defined as a bus, which is a concise way of grouping multiple nets under a single name. To access an individual net on a bus, use square bracket notation, for example: \texttt{y = bus[2]}. Similarly, individual nets on a bus can be assigned using the same notation, such as \texttt{bus[2] = a \& y}. You can also assign values to the entire bus at once, like this: \texttt{assign bus = {a \& b, c | d, e \& f}}. For more examples and syntax guidance, see Table \ref{tab:misc} in the appendix.
+    In the module code, inputs \code{s} and \code{d} are defined as a bus, which is a concise way of grouping multiple nets under a single name. To access an individual net on a bus, use square bracket notation, for example: \code{y = bus[2]}. Similarly, individual nets on a bus can be assigned using the same notation, such as \code{bus[2] = a \& y}. You can also assign values to the entire bus at once, like this: \code{assign bus = \{a \& b, c | d, e \& f\}}. For more examples and syntax guidance, see Table \ref{tab:misc} in the appendix.
 \end{extra}
 
 \subsection{Gate Level Modeling}
@@ -561,11 +394,11 @@ The first modeling style that you will learn is called structural modeling, or s
 \hline
 \endlastfoot
 
-AND Gate & \texttt{and (output, input1, input2, ...inputN);} & \texttt{and U1 (Y, A, B);} \\ 
+AND Gate & \code{and (output, input1, input2, ...inputN);} & \code{and U1 (Y, A, B);} \\ 
 \hline
-OR Gate & \texttt{or (output, input1, input2, ...inputN);} & \texttt{or U2 (Y, A, B);} \\
+OR Gate & \code{or (output, input1, input2, ...inputN);} & \code{or U2 (Y, A, B);} \\
 \hline
-NOT Gate & \texttt{not (output, input);} & \texttt{not U3 (Y, A);} \\
+NOT Gate & \code{not (output, input);} & \code{not U3 (Y, A);} \\
 \hline
 \caption{A selection of structural Verilog syntax}
 \label{tab:struct1}
@@ -659,13 +492,13 @@ endmodule
 \hline
 \endlastfoot
 
-Continuous Assignment & \texttt{assign <net> = <expression>;} & \texttt{assign Y = A \& B;} \\ 
+Continuous Assignment & \code{assign <net> = <expression>;} & \code{assign Y = A \& B;} \\ 
 \hline
-Bitwise AND & \texttt{assign <net> = <input1> \& <input2>;} & \texttt{assign Y = A \& B;} \\ 
+Bitwise AND & \code{assign <net> = <input1> \& <input2>;} & \code{assign Y = A \& B;} \\ 
 \hline
-Bitwise OR & \texttt{assign <net> = <input1> | <input2>;} & \texttt{assign Y = A | B;} \\
+Bitwise OR & \code{assign <net> = <input1> | <input2>;} & \code{assign Y = A | B;} \\
 \hline
-Bitwise NOT & \texttt{assign <net> = ~<input>;} & \texttt{assign Y = ~A;} \\
+Bitwise NOT & \code{assign <net> = ~<input>;} & \code{assign Y = ~A;} \\
 \hline
 \caption{A subset of Verilog dataflow syntax}
 \label{tab:df1}
@@ -695,21 +528,21 @@ endmodule
 \end{lstlisting}
 
 \subsubsection{Always Syntax}
-A "block" in Verilog is any section of code that encapsulates other code. They can be recognized by the keyword \textbf{\texttt{end}} or \textbf{\texttt{end\textlangle block\_name\textrangle}} in some instances, such as the keyword \textbf{\texttt{endmodule}} to close a module block. These end tokens denote the end of a block. If the block has a \textbf{\texttt{end\textlangle block\_name\textrangle}} closer, then the block is opened with the corresponding \textbf{\texttt{block\_name}}. Otherwise it opens with a \textbf{\texttt{begin}} keyword. In either case, the block provides the compiler with information on how to handle the code within it.
+A "block" in Verilog is any section of code that encapsulates other code. They can be recognized by the keyword \code{end} or \code{end\textlangle block\_name\textrangle} in some instances, such as the keyword \code{endmodule} to close a module block. These end tokens denote the end of a block. If the block has a \code{end\textlangle block\_name\textrangle} closer, then the block is opened with the corresponding \code{block\_name}. Otherwise it opens with a \code{begin} keyword. In either case, the block provides the compiler with information on how to handle the code within it.
 
 
 An alawys block contains three crucial parts. They are:
 
 \begin{enumerate}
-    \item The sensitivity list: \textbf{\texttt{always @(*)}}
-    \item The block opener: \textbf{\texttt{begin}}
+    \item The sensitivity list: \code{always @(*)}
+    \item The block opener: \code{begin}
     \item The logic to be performed 
-    \item The block closer: \textbf{\texttt{end}}
+    \item The block closer: \code{end}
 \end{enumerate}
 
-Although the full line \textbf{\texttt{always @(*)}} is required to define the sensitivity list, typically when referring to the list, one means only those values within the parentheses; \textbf{*} in this example.
+Although the full line \code{always @(*)} is required to define the sensitivity list, typically when referring to the list, one means only those values within the parentheses; \textbf{*} in this example.
 
-An always block is an abstraction specific to behavioral modeling. Behavioral modeling abstracts the specific definition of component relationships by using \textbf{\texttt{always}} blocks and sensitivity lists. The \textbf{\texttt{always}} block signals to the compiler that the logic inside should \textbf{\textit{always}} be evaluated whenever a signal in the sensitivity list changes. Based on this, the compiler infers the necessary hardware to establish the relationship. Sensitivity lists can be defined in two ways: explicitly, by listing signal names within parentheses, or implicitly, using \textbf{*}. The implicit method allows the compiler to infer the relationships from the behavior, making it generally easier and safer to use. However, explicit lists provide more control when needed.
+An always block is an abstraction specific to behavioral modeling. Behavioral modeling abstracts the specific definition of component relationships by using \code{always} blocks and sensitivity lists. The \code{always} block signals to the compiler that the logic inside should \textbf{\textit{always}} be evaluated whenever a signal in the sensitivity list changes. Based on this, the compiler infers the necessary hardware to establish the relationship. Sensitivity lists can be defined in two ways: explicitly, by listing signal names within parentheses, or implicitly, using \textbf{*}. The implicit method allows the compiler to infer the relationships from the behavior, making it generally easier and safer to use. However, explicit lists provide more control when needed.
 
 \subsection{Modeling Assignment}
 As before, create a new file and module. \ul{This time, instead of creating an output \textbf{wire}, create an output \textbf{reg} instead}. Write a behavioral model of a 4:1 multiplexer. Refer to Table \ref{tab:behav1} below, as well as Table \vref{tab:behavioral} in the Appendix for a syntax reference.
@@ -731,20 +564,20 @@ As before, create a new file and module. \ul{This time, instead of creating an o
 \hline
 \endlastfoot
 
-Always Block & \texttt{always @ (sensitivity\_list)} & \texttt{always @ (posedge clk)} \\ 
+Always Block & \code{always @ (sensitivity\_list)} & \code{always @ (posedge clk)} \\ 
 \hline
-Blocking Assignment & \texttt{= <expression>;} & \texttt{A = B + C;} \\ 
+Blocking Assignment & \code{= <expression>;} & \code{A = B + C;} \\ 
 \hline
-If-Else Statement & \texttt{if (condition) begin \dots end else begin \dots end} & \texttt{if (A > B) begin Y = 1; end else begin Y = 0; end} \\
+If-Else Statement & \code{if (condition) begin \dots end else begin \dots end} & \code{if (A > B) begin Y = 1; end else begin Y = 0; end} \\
 \hline
-Case Statement & \texttt{case (expression) \dots endcase} & \texttt{case (opcode) \dots endcase} \\
+Case Statement & \code{case (expression) \dots endcase} & \code{case (opcode) \dots endcase} \\
 \hline
 \caption{A sample of Verilog behavioral syntax}
 \label{tab:behav1}
 \end{longtable}
 
 \begin{extra}[frametitle={Assignment operator (=)}]
-    The equal sign assignment is what is known as a blocking assignment. It ensures a sequential assignment of values when consecutive assignments are performed. This assignment style, along with its companion non-blocking assignment operator (\texttt{<=}) can be used only within an always block and only on reg net types. You will learn more about blocking and non-blocking assignments in later courses. For now you should use strictly blocking assignments. When sequential logic is covered in future labs we will see the non-blocking operator again, and discuss the difference in detail.
+    The equal sign assignment is what is known as a blocking assignment. It ensures a sequential assignment of values when consecutive assignments are performed. This assignment style, along with its companion non-blocking assignment operator (\code{<=}) can be used only within an always block and only on reg net types. You will learn more about blocking and non-blocking assignments in later courses. For now you should use strictly blocking assignments. When sequential logic is covered in future labs we will see the non-blocking operator again, and discuss the difference in detail.
 \end{extra}
 
 \clearpage
@@ -828,19 +661,19 @@ Include your answers to all questions provided in the lab packet as part of your
 \hline
 \endlastfoot
 
-AND Gate & \texttt{and (output, input1, input2, ...inputN);} & \texttt{and U1 (Y, A, B);} \\ 
+AND Gate & \code{and (output, input1, input2, ...inputN);} & \code{and U1 (Y, A, B);} \\ 
 \hline
-OR Gate & \texttt{or (output, input1, input2, ...inputN);} & \texttt{or U2 (Y, A, B);} \\
+OR Gate & \code{or (output, input1, input2, ...inputN);} & \code{or U2 (Y, A, B);} \\
 \hline
-NOT Gate & \texttt{not (output, input);} & \texttt{not U3 (Y, A);} \\
+NOT Gate & \code{not (output, input);} & \code{not U3 (Y, A);} \\
 \hline
-NAND Gate & \texttt{nand (output, input1, input2, ...inputN);} & \texttt{nand U4 (Y, A, B);} \\
+NAND Gate & \code{nand (output, input1, input2, ...inputN);} & \code{nand U4 (Y, A, B);} \\
 \hline
-NOR Gate & \texttt{nor (output, input1, input2, ...inputN);} & \texttt{nor U5 (Y, A, B);} \\
+NOR Gate & \code{nor (output, input1, input2, ...inputN);} & \code{nor U5 (Y, A, B);} \\
 \hline
-XOR Gate & \texttt{xor (output, input1, input2, ...inputN);} & \texttt{xor U6 (Y, A, B);} \\
+XOR Gate & \code{xor (output, input1, input2, ...inputN);} & \code{xor U6 (Y, A, B);} \\
 \hline
-XNOR Gate & \texttt{xnor (output, input1, input2, ...inputN);} & \texttt{xnor U7 (Y, A, B);} \\
+XNOR Gate & \code{xnor (output, input1, input2, ...inputN);} & \code{xnor U7 (Y, A, B);} \\
 \hline
 \caption{Structural Modeling Syntax}
 \label{tab:structural}
@@ -863,37 +696,37 @@ XNOR Gate & \texttt{xnor (output, input1, input2, ...inputN);} & \texttt{xnor U7
 \hline
 \endlastfoot
 
-Continuous Assignment & \texttt{assign <net> = <expression>;} & \texttt{assign Y = A \& B;} \\ 
+Continuous Assignment & \code{assign <net> = <expression>;} & \code{assign Y = A \& B;} \\ 
 \hline
-Bitwise AND & \texttt{assign <net> = <input1> \& <input2>;} & \texttt{assign Y = A \& B;} \\ 
+Bitwise AND & \code{assign <net> = <input1> \& <input2>;} & \code{assign Y = A \& B;} \\ 
 \hline
-Bitwise OR & \texttt{assign <net> = <input1> | <input2>;} & \texttt{assign Y = A | B;} \\
+Bitwise OR & \code{assign <net> = <input1> | <input2>;} & \code{assign Y = A | B;} \\
 \hline
-Bitwise NOT & \texttt{assign <net> = ~<input>;} & \texttt{assign Y = ~A;} \\
+Bitwise NOT & \code{assign <net> = ~<input>;} & \code{assign Y = ~A;} \\
 \hline
-Bitwise XOR & \texttt{assign <net> = <input1> \^{} <input2>;} & \texttt{assign Y = A \^{} B;} \\
+Bitwise XOR & \code{assign <net> = <input1> \^{} <input2>;} & \code{assign Y = A \^{} B;} \\
 \hline
-Conditional Operator & \texttt{assign <net> = (condition) ? <value1> : <value2>;} & \texttt{assign Y = (A > B) ? 1'b1 : 1'b0;} \\
+Conditional Operator & \code{assign <net> = (condition) ? <value1> : <value2>;} & \code{assign Y = (A > B) ? 1'b1 : 1'b0;} \\
 \hline
-Multiplexer (MUX) & \texttt{assign <output> = <sel> ? <input1> : <input2>;} & \texttt{assign Y = sel ? A : B;} \\
+Multiplexer (MUX) & \code{assign <output> = <sel> ? <input1> : <input2>;} & \code{assign Y = sel ? A : B;} \\
 \hline
-Arithmetic Addition & \texttt{assign <net> = <input1> + <input2>;} & \texttt{assign Y = A + B;} \\
+Arithmetic Addition & \code{assign <net> = <input1> + <input2>;} & \code{assign Y = A + B;} \\
 \hline
-Arithmetic Subtraction & \texttt{assign <net> = <input1> - <input2>;} & \texttt{assign Y = A - B;} \\
+Arithmetic Subtraction & \code{assign <net> = <input1> - <input2>;} & \code{assign Y = A - B;} \\
 \hline
-Logical Shift Left & \texttt{assign <net> = <input> << <shift\_amount>;} & \texttt{assign Y = A << 2;} \\
+Logical Shift Left & \code{assign <net> = <input> << <shift\_amount>;} & \code{assign Y = A << 2;} \\
 \hline
-Logical Shift Right & \texttt{assign <net> = <input> >> <shift\_amount>;} & \texttt{assign Y = A >> 2;} \\
+Logical Shift Right & \code{assign <net> = <input> >> <shift\_amount>;} & \code{assign Y = A >> 2;} \\
 \hline
-Relational Operator & \texttt{assign <net> = <input1> <op> <input2>;} & \texttt{assign Y = (A > B);} \\
+Relational Operator & \code{assign <net> = <input1> <op> <input2>;} & \code{assign Y = (A > B);} \\
 \hline
-Logical AND & \texttt{assign <net> = <input1> \&\& <input2>;} & \texttt{assign Y = A \&\& B;} \\
+Logical AND & \code{assign <net> = <input1> \&\& <input2>;} & \code{assign Y = A \&\& B;} \\
 \hline
-Logical OR & \texttt{assign <net> = <input1> || <input2>;} & \texttt{assign Y = A || B;} \\
+Logical OR & \code{assign <net> = <input1> || <input2>;} & \code{assign Y = A || B;} \\
 \hline
-Equality Check & \texttt{assign <net> = <input1> == <input2>;} & \texttt{assign Y = (A == B);} \\
+Equality Check & \code{assign <net> = <input1> == <input2>;} & \code{assign Y = (A == B);} \\
 \hline
-Inequality Check & \texttt{assign <net> = <input1> != <input2>;} & \texttt{assign Y = (A != B);} \\
+Inequality Check & \code{assign <net> = <input1> != <input2>;} & \code{assign Y = (A != B);} \\
 \hline
 \caption{Dataflow Modeling}
 \label{tab:dataflow}
@@ -916,23 +749,23 @@ Inequality Check & \texttt{assign <net> = <input1> != <input2>;} & \texttt{assig
 \hline
 \endlastfoot
 
-Always Block & \texttt{always @ (sensitivity\_list)} & \texttt{always @ (posedge clk)} \\ 
+Always Block & \code{always @ (sensitivity\_list)} & \code{always @ (posedge clk)} \\ 
 \hline
-Blocking Assignment & \texttt{= <expression>;} & \texttt{A = B + C;} \\ 
+Blocking Assignment & \code{= <expression>;} & \code{A = B + C;} \\ 
 \hline
-Non-Blocking Assignment & \texttt{<= <expression>;} & \texttt{A <= B + C;} \\ 
+Non-Blocking Assignment & \code{<= <expression>;} & \code{A <= B + C;} \\ 
 \hline
-If-Else Statement & \texttt{if (condition) begin \dots end else begin \dots end} & \texttt{if (A > B) begin Y = 1; end else begin Y = 0; end} \\
+If-Else Statement & \code{if (condition) begin \dots end else begin \dots end} & \code{if (A > B) begin Y = 1; end else begin Y = 0; end} \\
 \hline
-Case Statement & \texttt{case (expression) \dots endcase} & \texttt{case (opcode) \dots endcase} \\
+Case Statement & \code{case (expression) \dots endcase} & \code{case (opcode) \dots endcase} \\
 \hline
-For Loop & \texttt{for (init; condition; step) begin \dots end} & \texttt{for (i = 0; i < 8; i = i+1) begin \dots end} \\
+For Loop & \code{for (init; condition; step) begin \dots end} & \code{for (i = 0; i < 8; i = i+1) begin \dots end} \\
 \hline
-Initial Block & \texttt{initial begin \dots end} & \texttt{initial begin A = 0; B = 0; end} \\ 
+Initial Block & \code{initial begin \dots end} & \code{initial begin A = 0; B = 0; end} \\ 
 \hline
-Continuous Assignment & \texttt{assign <net> = <expression>;} & \texttt{assign Y = A \& B;} \\
+Continuous Assignment & \code{assign <net> = <expression>;} & \code{assign Y = A \& B;} \\
 \hline
-Begin-End Block & \texttt{begin \dots end} & \texttt{begin A = B + C; end} \\
+Begin-End Block & \code{begin \dots end} & \code{begin A = B + C; end} \\
 \hline
 \caption{Behavioral Modeling}
 \label{tab:behavioral}
@@ -956,61 +789,61 @@ Begin-End Block & \texttt{begin \dots end} & \texttt{begin A = B + C; end} \\
 \hline
 \endlastfoot
 
-Module Declaration & \texttt{module <name> (port\_list); \dots endmodule} & \texttt{module AND\_gate (output Y, input A, B); \dots endmodule} & Yes \\
+Module Declaration & \code{module <name> (port\_list); \dots endmodule} & \code{module AND\_gate (output Y, input A, B); \dots endmodule} & Yes \\
 \hline
-Module Instantiation & \texttt{<module\_name> <instance\_name> (port\_list);} & \texttt{AND\_gate U1 (Y, A, B);} & Yes \\
+Module Instantiation & \code{<module\_name> <instance\_name> (port\_list);} & \code{AND\_gate U1 (Y, A, B);} & Yes \\
 \hline
-Named Port Mapping & \texttt{<module\_name> <instance\_name> (.port\_name(signal), ...);} & \texttt{AND\_gate U2 (.Y(Y), .A(A), .B(B));} & Yes \\
+Named Port Mapping & \code{<module\_name> <instance\_name> (.port\_name(signal), ...);} & \code{AND\_gate U2 (.Y(Y), .A(A), .B(B));} & Yes \\
 \hline
-Positional Port Mapping & \texttt{<module\_name> <instance\_name> (signal1, signal2, ...);} & \texttt{AND\_gate U3 (Y, A, B);} & Yes \\
+Positional Port Mapping & \code{<module\_name> <instance\_name> (signal1, signal2, ...);} & \code{AND\_gate U3 (Y, A, B);} & Yes \\
 \hline
-Input Declaration & \texttt{input <signal\_name>;} & \texttt{input A, B;} & Yes \\
+Input Declaration & \code{input <signal\_name>;} & \code{input A, B;} & Yes \\
 \hline
-Output Declaration & \texttt{output <signal\_name>;} & \texttt{output Y;} & Yes \\
+Output Declaration & \code{output <signal\_name>;} & \code{output Y;} & Yes \\
 \hline
-Wire Declaration & \texttt{wire <signal\_name>;} & \texttt{wire w1;} & Yes \\
+Wire Declaration & \code{wire <signal\_name>;} & \code{wire w1;} & Yes \\
 \hline
-Reg Declaration & \texttt{reg <signal\_name>;} & \texttt{reg A;} & Yes \\
+Reg Declaration & \code{reg <signal\_name>;} & \code{reg A;} & Yes \\
 \hline
-Parameter Declaration & \texttt{parameter <name> = <value>;} & \texttt{parameter WIDTH = 8;} & Yes \\
+Parameter Declaration & \code{parameter <name> = <value>;} & \code{parameter WIDTH = 8;} & Yes \\
 \hline
-Localparam Declaration & \texttt{localparam <name> = <value>;} & \texttt{localparam MAX = 100;} & Yes \\
+Localparam Declaration & \code{localparam <name> = <value>;} & \code{localparam MAX = 100;} & Yes \\
 \hline
-Vector Declaration & \texttt{<type> [msb:lsb] <name>;} & \texttt{wire [7:0] data;} & Yes \\
+Vector Declaration & \code{<type> [msb:lsb] <name>;} & \code{wire [7:0] data;} & Yes \\
 \hline
-Assign Statement & \texttt{assign <net> = <expression>;} & \texttt{assign Y = A \& B;} & Yes \\
+Assign Statement & \code{assign <net> = <expression>;} & \code{assign Y = A \& B;} & Yes \\
 \hline
-Concatenation & \texttt{\{<expression1>, <expression2>\}} & \texttt{assign Y = \{A, B\};} & Yes \\
+Concatenation & \code{\{<expression1>, <expression2>\}} & \code{assign Y = \{A, B\};} & Yes \\
 \hline
-Replication & \texttt{\{\#replication\_count\{expression\}\}} & \texttt{assign Y = \{4\{A\}\};} & Yes \\
+Replication & \code{\{\#replication\_count\{expression\}\}} & \code{assign Y = \{4\{A\}\};} & Yes \\
 \hline
-Generate Block & \texttt{generate \dots endgenerate} & \texttt{generate for (i = 0; i < N; i = i+1) \dots endgenerate} & Yes \\
+Generate Block & \code{generate \dots endgenerate} & \code{generate for (i = 0; i < N; i = i+1) \dots endgenerate} & Yes \\
 \hline
-Integer Declaration & \texttt{integer <name>;} & \texttt{integer i;} & No \\
+Integer Declaration & \code{integer <name>;} & \code{integer i;} & No \\
 \hline
-Constant Declaration & \texttt{<type> [msb:lsb] <constant> = <value>;} & \texttt{wire [7:0] constant = 8'b10101010;} & Yes \\
+Constant Declaration & \code{<type> [msb:lsb] <constant> = <value>;} & \code{wire [7:0] constant = 8'b10101010;} & Yes \\
 \hline
-Instantiation of Built-in Gates & \texttt{<gate\_type> <instance\_name> (port\_list);} & \texttt{and (Y, A, B);} & Yes \\
+Instantiation of Built-in Gates & \code{<gate\_type> <instance\_name> (port\_list);} & \code{and (Y, A, B);} & Yes \\
 \hline
-Parameter Override & \texttt{\#(<param1\_value>, <param2\_value>)} & \texttt{module\_name \#(10, 20) U1 (...);} & Yes \\
+Parameter Override & \code{\#(<param1\_value>, <param2\_value>)} & \code{module\_name \#(10, 20) U1 (...);} & Yes \\
 \hline
-Tri-State Buffer & \texttt{assign <output> = en ? <input> : 1'bz;} & \texttt{assign Y = en ? A : 1'bz;} & Yes \\
+Tri-State Buffer & \code{assign <output> = en ? <input> : 1'bz;} & \code{assign Y = en ? A : 1'bz;} & Yes \\
 \hline
-Gate-level Primitive & \texttt{and, or, nand, nor, xor, xnor, not} & \texttt{and U1 (Y, A, B);} & Yes \\
+Gate-level Primitive & \code{and, or, nand, nor, xor, xnor, not} & \code{and U1 (Y, A, B);} & Yes \\
 \hline
-Delay Statement (For Gate Delays) & \texttt{\#delay <statement>} & \texttt{assign \#5 Y = A \& B;} & No \\
+Delay Statement (For Gate Delays) & \code{\#delay <statement>} & \code{assign \#5 Y = A \& B;} & No \\
 \hline
-Signed Arithmetic & \texttt{signed [msb:lsb] <name>;} & \texttt{signed [7:0] A;} & Yes \\
+Signed Arithmetic & \code{signed [msb:lsb] <name>;} & \code{signed [7:0] A;} & Yes \\
 \hline
-Bus Declaration & \texttt{<type> [msb:lsb] <name>;} & \texttt{wire [7:0] bus;} & Yes \\
+Bus Declaration & \code{<type> [msb:lsb] <name>;} & \code{wire [7:0] bus;} & Yes \\
 \hline
-Range Selection & \texttt{<signal>[msb:lsb]} & \texttt{Y = data[7:0];} & Yes \\
+Range Selection & \code{<signal>[msb:lsb]} & \code{Y = data[7:0];} & Yes \\
 \hline
-Part Select & \texttt{<signal>[msb:lsb]} & \texttt{Y = data[7:4];} & Yes \\
+Part Select & \code{<signal>[msb:lsb]} & \code{Y = data[7:4];} & Yes \\
 \hline
-Arithmetic Operations & \texttt{<operand1> + <operand2>} & \texttt{assign Y = A + B;} & Yes \\
+Arithmetic Operations & \code{<operand1> + <operand2>} & \code{assign Y = A + B;} & Yes \\
 \hline
-Logical Operations & \texttt{<operand1> \& <operand2>} & \texttt{assign Y = A \& B;} & Yes \\
+Logical Operations & \code{<operand1> \& <operand2>} & \code{assign Y = A \& B;} & Yes \\
 \hline
 \caption{Misc. Syntax}
 \label{tab:misc}

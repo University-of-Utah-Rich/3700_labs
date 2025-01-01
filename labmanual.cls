@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{betterjournal}[2024/10/24 Custom article class]
+\ProvidesClass{labmanual}[2024/10/24 Custom article class]
 
 % Load the base article class with any options passed to your class
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{journal}}
@@ -10,7 +10,7 @@
 \renewcommand{\familydefault}{\sfdefault}
 
 \usepackage[letterspace=500]{microtype}
-
+\usepackage[scaled=0.85]{beramono}
 % Your resets and modifications go here
  \usepackage{parskip}
 
@@ -108,6 +108,19 @@
 \usepackage[most]{tcolorbox}
 \usepackage{enumitem}
 \usepackage{flafter}
+\usepackage{environ}
+
+\mdfsetup{skipabove=1em,skipbelow=1em}
+
+% Create a wrapper for non-breaking environments
+\newcommand{\makeunbreakable}[1]{%
+  \expandafter\RenewEnviron\expandafter{#1}{%
+    \par\nobreak\vfil\penalty0\vfilneg
+    \begin{samepage}
+      \BODY
+    \end{samepage}
+  }%
+}
 
 
 \NewDocumentCommand{\directions}{>{\SplitList{,}}m}{%
@@ -128,6 +141,8 @@
   \endgroup
   \normalfont
 }
+
+\newcommand{\code}[1]{\textbf{\texttt{#1}}}
 
 %\newcommand{\keyword}[1]{\textbf{\texttt{#1}}}
 
@@ -164,6 +179,7 @@
     frametitlebelowskip=5pt,
     frametitlerule=false, % remove black border under the title
     frametitlerulecolor=black, % Set title border color to black
+    nobreak=true,
     frametitle={Question \thequestioncounter: \IfNoValueTF{#1}{Default Title}{#1}} % If no title, use "Default Title"
   ]
 }{
@@ -183,6 +199,7 @@
     frametitlebelowskip=5pt,
     frametitlerule=false, % Ensure a black border under the title
     frametitlerulecolor=black, % Set title border color to black
+    nobreak=true,
     frametitle={Bonus Question \thebonusquestioncounter: \IfNoValueTF{#1}{Default Title}{#1}} % If no title, use "Default Title"
   ]
 }{
@@ -217,7 +234,8 @@
   frametitleaboveskip=10pt,
   frametitlebelowskip=5pt,
   frametitlerule=false, % Ensure a black border under the title
-  frametitlerulecolor=blue
+  frametitlerulecolor=blue,
+  nobreak=true
 ]{extra}
 
 \newmdenv[
@@ -229,7 +247,8 @@
   frametitleaboveskip=10pt,
   frametitlebelowskip=5pt,
   frametitlerule=false, % Ensure a black border under the title
-  frametitlerulecolor=red % Set title border color to black
+  frametitlerulecolor=red, % Set title border color to black
+  nobreak=true
 ]{important}
 
 
@@ -276,3 +295,4 @@
 \lstdefineformat{V}{~=\( \sim \)}
 
 \lstset{style=mystyle, format=V, numbers=none}
+

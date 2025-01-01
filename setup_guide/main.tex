@@ -18,7 +18,7 @@
 
 \newcommand{\drawkey}[1]{%
   \begingroup\normalfont
-  \includegraphics[scale=.3]{keys/#1.png}%
+  \includegraphics[scale=.3]{setup_guide//keys/#1.png}%
   \endgroup
 }
 
@@ -55,7 +55,7 @@
 
 
 % Only the first Slide
-\title{How to Install Intel Questa}
+\title{Quartus/Questa Install Guide}
 \author{Rich Baird}
 \institute[University of Utah]{}
 \date{\today}
@@ -77,29 +77,48 @@
 
 \subsection{Obtaining the software}
 \begin{frame}{Software Installation}
-    To begin, navigate in your preferred browser to \url{https://fpgasoftware.intel.com}. Once there, make sure that you have selected the Lite edition, and the latest release. At the time of writing, this is version 21.1.
+    To begin, navigate in your preferred browser to \url{https://fpgasoftware.intel.com}. You will be directed to a website with links to download various software. Select Quartus Prime Lite.
     
 \begin{figure}
     \centering
-    \includegraphics[scale=.5]{figures/QLite21.png}
-    \caption{Ensure the correct edition and release}
-    \label{fig:editionrelease}
+    \includegraphics[width=1\linewidth]{setup_guide//figures/qprimelite_download.png}
+    \caption{Select the Quartus Prime Lite download link}
+    \label{fig:qprime_dl}
 \end{figure}
 \end{frame}
 
 \begin{frame}{Software Installation}
-    Further down on the page find the download link for \quotes{Questa - Intel FPGA Edition(includes Starter Edition)}
+    On the next page, under the Downloads section, choose to download the automated installer.
     \begin{figure}
         \centering
-        \includegraphics[scale=.4]{figures/questadl.png}
-        \caption{Download Questa with the blue download arrow}
-        \label{fig:my_label}
+        \includegraphics[width=1\linewidth]{setup_guide//figures/auto_installer.png}
+        \caption{Download the automated installer}
+        \label{fig:enter-label}
+    \end{figure}
+\end{frame}
+\subsection{Installing the software}
+\begin{frame}{Software Installation}
+    Once the download is complete, run the installer. You will see a screen with multiple options. Ensure the following items are selected and then press Download. The download may take some time.
+    \begin{itemize}
+        \item Quartus Prime Lite Edition (Free) and all sub-items
+        \item Devices: Max 10 FPGA Device Support
+        \item Auto install after download
+        \item Agree to intel license agreement
+        \item After install actions
+    \end{itemize}
+    See the figure on the next page
+\end{frame}
+\begin{frame}{Software Installation}
+        \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{setup_guide//figures/installer_1.png}
+        \caption{Make sure you have selected Questa and Max 10 options}
+        \label{fig:enter-label}
     \end{figure}
 \end{frame}
 \subsection{Obtaining a license}
 \begin{frame}{Get a license}
-    To use the software you will need a free license. This can be obtained by navigating in your preferred browser to \url{https://licensing.intel.com/}. You will be greeted with a login screen. Use your intel credentials to log in here.\par
-If you are not able to log in with those credentials, you may need to register a specific account for the licensing center. Some users have reported after creating an account that they have had to wait up to 30 minutes before the licensing page would let them in. If the page redirects you to the Intel homepage, just continue trying every five minutes or so.
+    While the download is in progress, use this time to obtain a free license to use the new software. This can be obtained by navigating in your preferred browser to \url{https://licensing.intel.com/}. You will have the option to sign-in or enroll. Choose enroll to create a new account. Follow the steps in the form to create a new account. \textbf{Use an email other than your school email. Using your school email will cause the licensing portal to attempt to log in via Azure, which will not work.} Once complete, the enrollment process is performed automatically and may take up to 30 minutes. You will receive an email when your account is ready.
 \end{frame}
 \begin{frame}{Get a license}
     Once you have completed the registration and are able to log into the licensing site, from the menu select \quotes{Sign up for Evaluation or Free Licenses}. From that page, select the 2nd option in the table \quotes{Questa*-Intel® FPGA Starter Edition} and set the \# of seats to 1.
@@ -191,15 +210,7 @@ To obtain the first, from the launch bar of your PC, search for \quotes{This PC}
 \end{frame}
 \subsection{Complete Installation}
 \begin{frame}{Software Installation}
-    If you have already installed Quartus with Questa you can skip this step.
-    \hline
-    With the generated license, you are ready to install the Questa program you downloaded earlier. Be sure to select Intel FPGA \textbf{Starter} Edition, \textbf{NOT} FPGA Edition. Follow the defaults for the rest of the install.
-    \begin{figure}
-        \centering
-        \includegraphics[scale=.5]{figures/questaintelfpgaedt.png}
-        \caption{Select Intel FPGA Edition}
-        \label{fig:my_label}
-    \end{figure}
+    Wait for the software installation to complete before continuing.
 \end{frame}
 \subsection{Installing the license}
 \begin{frame}{License Installation}

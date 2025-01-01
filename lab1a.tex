@@ -1,0 +1,45 @@
+\documentclass[12pt]{labmanual}
+\usepackage[final]{pdfpages}
+\title{Lab Assignment 1.a}
+\author{}
+\date{}
+
+% Set custom header
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{ECE/CS 3700}
+\fancyhead[L]{Lab 1.a: Intro and Installation}
+
+\begin{document}
+\maketitle
+\section{Introduction}
+This first lab will walk you through the steps of installing the software you will use throughout this course and introduce you to the style used in subsequent lab manuals.
+\section{Style Guide}
+The lab manuals in this course use a variety of visual cues to help students navigate the complexities of digital design more easily. These queues are explained below.
+\subsection{Call-outs}
+\textbf{Critical information} required to successfully complete the lab will appear as shown:
+\begin{important}[frametitle={Critical Info}]
+Critical information is called out using a red box.
+\end{important}
+\textbf{Useful information} is called out in a blue box as shown:
+\begin{extra}[frametitle={Useful Information}]
+    Useful but not critical information is called out using a blue box.
+\end{extra}
+\textbf{Questions} will prompt you to think critically about the material and answers to them may be required in your final report. Check with your professor to determine the expectation.
+\vspace{1em}
+\begin{question}[Questions are yellow]
+Questions are called out in a yellow box.
+\end{question}
+\subsection{Keywords and code}
+\textbf{Keywords} will always be typeset in bold. This will help you recognize important terms quickly. \textbf{Code blocks} are formatted as shown:
+\begin{lstlisting}[language=Verilog]
+    assign y = (a & b) | (~a & c);
+\end{lstlisting}
+simple inline code or verilog terms are formatted in truetype bold. For example: Name the \code{module} you just created \textbf{example.v}.
+\section{Lab Requirements}
+\begin{question}[Install Software]
+    To complete this lab, follow the included guide and launch both Quartus and Questa.
+\end{question}
+\includepdf[pages=-,pagecommand={},width=\textwidth]{setup_guide/setup_guide.pdf}
+\end{document}
