@@ -1,0 +1,228 @@
+\documentclass[12pt]{labmanual}
+
+\title{Guide to Using the Lab Manual Class}
+
+\begin{document}
+\maketitle
+\makeheaders
+\clearpage
+\tableofcontents
+\clearpage
+\section{Introduction}
+
+This guide demonstrates the key features of the \texttt{labmanual} class for creating consistent laboratory manuals. The class provides specialized environments and commands for structuring your content effectively.
+
+\section{Basic Formatting Commands}
+
+\subsection{Page Setup}
+Page setup consists of declaring the document class and text size, adding title and headers, including any extra packages required. The basic template follows.
+\begin{codeblock} 
+\documentclass[12pt]{labmanual} % Use the labmanual class and 12pt font
+\title{Guide to Using the Lab Manual Class} % Title is used for title page and header
+\begin{document}
+\maketitle % Create a title page
+\makeheaders % Generate headers
+\end{codeblock}
+
+\subsection{Code and Keywords}
+
+Use \verb|\code{text}| for inline code snippets and \verb|\keyword{text}| for keywords. For example:
+Enter \code{cd directory} to change directories. The \keyword{while} loop continues until the condition is false.
+
+\subsection{Navigation}
+
+The \verb|\directions{a,b,c}| command creates a chain of directions with arrows:
+
+\directions{Settings,Network,Advanced,Protocol}
+
+\section{Special Environments}
+
+\subsection{Code Blocks}
+
+For multi-line code samples, use the \texttt{codeblock} environment:
+
+\begin{codeblock}[language=python]
+def calculate_checksum(data):
+    total = 0
+    for byte in data:
+        total += byte
+    return total & 0xFF
+\end{codeblock}
+
+This will prevent the code block from breaking across the page. If that's not the desired behavior, you can switch \texttt{codeblock} to the \texttt{lstlisting} environment as a drop-in replacement.
+
+\subsection{Important Information}
+
+Use the \texttt{important} environment to highlight critical information:
+
+\begin{important}[Safety Warning]
+Always wear safety goggles and gloves when handling chemicals in the laboratory.
+\end{important}
+
+\subsection{Extra Information}
+
+The \texttt{extra} environment is useful for supplementary content:
+
+\begin{extra}[Historical Context]
+The TCP/IP protocol suite was developed in the 1970s by Vint Cerf and Bob Kahn.
+\end{extra}
+
+\subsection{Side-by-Side Content with Aside}
+
+The \texttt{aside} environment allows you to place supplementary content to the right of your main document flow. Think of it as automatically placing an \texttt{extra} environment to the right of your current text without interrupting the natural flow of the document:
+
+\begin{aside}[0.6,0.4]{Understanding IP Addresses}
+\begin{leftcontent}
+IP addresses are fundamental to network communication. Every device on a network needs a unique address to send and receive data. Modern networks primarily use IPv4 or IPv6 addresses.
+
+When configuring a network interface, you'll need to set both the IP address and subnet mask. These work together to define the network segment your device belongs to.
+\end{leftcontent}
+\begin{rightcontent}
+\begin{itemize}
+\item IPv4: 32-bit address (e.g., 192.168.1.1)
+\item IPv6: 128-bit address (e.g., 2001:...)
+\item Special ranges reserved for private networks
+\end{itemize}
+\end{rightcontent}
+\end{aside}
+
+The main content continues to flow naturally here, uninterrupted by the supplementary information that appeared to the right.
+
+\section{Questions and Assignments}
+
+\subsection{Regular Questions}
+
+Use the \texttt{question} environment for lab questions:
+
+\begin{question}[Protocol Analysis]
+What is the purpose of the TTL field in an IP packet header? How does it prevent infinite routing loops?
+\end{question}
+
+\begin{question}[Implementation]
+Modify the provided checksum function to handle 16-bit words instead of bytes.
+\end{question}
+
+\subsection{Bonus Questions}
+
+For extra credit or challenge questions, use the \texttt{bonusquestion} environment:
+
+\begin{bonusquestion}[Performance Optimization]
+How could you modify the checksum algorithm to utilize parallel processing?
+\end{bonusquestion}
+
+\section{Question Summary Section}
+
+The \texttt{questionssection} environment serves 3 important purposes:
+\begin{itemize}
+\item It automatically adds a notice explaining that the questions are collected from throughout the lab manual for convenience and need only be answered once
+\item It automatically resets both regular and bonus question counters after the section ends, ensuring proper numbering throughout the document.
+\item It automatically uses Roman Numeral to separate it from the content sections
+\end{itemize}
+
+Example usage:
+
+\begin{questionssection}
+\begin{question}[Summary Question 1]
+Explain the relationship between TCP sequence numbers and acknowledgment numbers.
+\end{question}
+
+\begin{question}[Summary Question 2]
+What are the primary differences between UDP and TCP?
+\end{question}
+\end{questionssection}
+
+\section{Utility Commands}
+
+\subsection{TODOs}
+
+Use \verb|\todo{text}| to mark sections that need attention:
+
+\todo{Add diagram of three-way handshake}
+
+\section{Style Guidelines}
+
+\subsection{Tables}
+
+For tables that span multiple pages, use the \texttt{longtable} environment. Always use booktabs-style rules (\verb|\toprule|, \verb|\midrule|, \verb|\bottomrule|) for professional formatting:
+
+\begin{longtable}{lll}
+\toprule
+Protocol & Port & Description \\
+\midrule
+HTTP & 80 & Web traffic \\
+HTTPS & 443 & Secure web traffic \\
+SSH & 22 & Secure shell \\
+\bottomrule
+\end{longtable}
+
+\subsection{Figures and Diagrams}
+
+\begin{itemize}
+\item Use TikZ for creating diagrams - the class includes libraries for:
+  \begin{itemize}
+  \item \code{calc} - For mathematical calculations
+  \item \code{positioning} - For relative positioning of elements
+  \item \code{arrows} - For customizable arrow tips
+  \item \code{shadows.blur} - For adding depth to diagrams
+  \end{itemize}
+\item Always include captions and labels for figures:
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[draw] (a) {Client};
+\node[draw, right=of a] (b) {Server};
+\draw[->] (a) -- (b) node[midway, above] {Request};
+\end{tikzpicture}
+\caption{Basic Client-Server Communication}
+\label{fig:client-server}
+\end{figure}
+\end{itemize}
+
+\subsection{Cross-References}
+
+\begin{itemize}
+\item Use \verb|\autoref| instead of \verb|\ref| for automatic context in references
+\item Always label significant sections, figures, and tables you might reference
+\item Example: ``As shown in \verb|\autoref{fig:client-server}|...''
+\end{itemize}
+
+\subsection{Code Formatting}
+
+\begin{itemize}
+\item Use the provided \texttt{defaultstyle} for general code
+\item Use \texttt{console} style for terminal output and commands
+\item Code blocks automatically handle line breaks and maintain spacing
+\end{itemize}
+
+\subsection{Typography Guidelines}
+
+\begin{itemize}
+\item The class uses sans-serif fonts by default
+\item Mathematical formulas should use \verb|amsmath| environments
+\item Use \verb|\emph{}| for emphasis instead of underlining
+\end{itemize}
+
+\subsection{Page Layout}
+
+\begin{itemize}
+\item Create a title page using \verb|\maketitle| in combination with \verb|\clearpage|
+\item Include a ToC using \verb|\tableofcontents| as a separate page with \verb|\clearpage|
+\item Headers are automatically set up with the course number and title using the \verb|\makeheaders| which must be called in the document section after \verb|\title| has been defined
+\item Figures and tables are allowed to occupy up to 90\% of the top of a page
+\item The class automatically handles spacing around lists and environments
+\item Use \verb|\vspace| sparingly - the class handles most spacing automatically
+\item Use \verb|\clearpage| to create a new page when required for emphasis or formatting
+\end{itemize}
+
+\section{Tips for Best Results}
+
+\begin{itemize}
+\item Use the \texttt{aside} environment when you want to provide supplementary information without breaking document flow
+\item Place the main content in \texttt{leftcontent} and supplementary material in \texttt{rightcontent}
+\item Include a \texttt{questionssection} at the start of each lab to help students track their progress
+\item Use the \texttt{important} environment sparingly to maintain its impact
+\item Place code blocks inside questions when they relate directly to the assignment
+\end{itemize}
+
+\end{document}

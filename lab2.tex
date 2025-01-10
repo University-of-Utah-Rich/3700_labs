@@ -9,43 +9,57 @@
 \author{}
 \date{}
 
-%New command to display footnote whose markers will always be hidden
-\let\svthefootnote\thefootnote
-\newcommand\blfootnotetext[1]{%
-  \let\thefootnote\relax\footnote{#1}%
-  \addtocounter{footnote}{-1}%
-  \let\thefootnote\svthefootnote%
-}
-
-%Overriding the \footnotetext command to hide the marker if its value is `0`
-\let\svfootnotetext\footnotetext
-\renewcommand\footnotetext[2][?]{%
-  \if\relax#1\relax%
-    \ifnum\value{footnote}=0\blfootnotetext{#2}\else\svfootnotetext{#2}\fi%
-  \else%
-    \if?#1\ifnum\value{footnote}=0\blfootnotetext{#2}\else\svfootnotetext{#2}\fi%
-    \else\svfootnotetext[#1]{#2}\fi%
-  \fi
-}
-
-% Set custom header spanning both columns
-\setlength{\headheight}{15.2pt}
-\pagestyle{fancy}
-\fancyhf{}  % Clear the default header/footer
-\fancyhead[R]{ECE/CS 3700}  % Right-side header content
-\fancyhead[L]{Lab 2: Simulation and Synthesis}  % Left-side header content
-
-\setlist[itemize]{noitemsep}
-\setlist[enumerate]{noitemsep}
-\raggedbottom
 
 \begin{document}
-\captionsetup{tablewithin=section}
 \maketitle
-\begin{important}[frametitle={Create a project}]
+\makeheaders
+\clearpage
+\tableofcontents
+\clearpage
+\begin{important}[{Create a project}]
 Before beginning this lab, and in all subsequent labs, create a project following the steps outlined in lab 1. Throughout this lab and the labs that follow, \keyword{top} is used to refer to the top-level module. If you have chosen a different naming convention, you will need to adjust accordingly.
 \end{important}
-
+\clearpage
+\begin{questionssection}
+\begin{question}[Full adder design]
+\begin{enumerate}
+    \item  Create a half adder module that receives 2 inputs: $\mathbf{a}$ and $\mathbf{b}$ and provides 2 outputs: \textbf{sum} and $\textbf{c}_\textbf{out}$. Design the logic in either structural or gate-level modeling styles.
+    \item Create a full adder module that receives 3 inputs: $\mathbf{a},\mathbf{b}$, and $\textbf{c}_\textbf{in}$ and provides 2 outputs:\hspace{1em}\textbf{sum} and $\textbf{c}_\textbf{out}$. Design the logic using two instances of the half adder module you designed in 1.
+\end{enumerate}
+\end{question}
+\begin{question}[Successful Simulation]
+    Run your test bench in the Questa software. Verify a successful output by examining the output terminal. Take a screenshot of the output and include it in your lab report.
+\end{question}
+\begin{question}[4-bit Ripple Carry]
+    Design a 4-bit ripple carry adder using the full adder modules you designed and tested previously. Write a test bench following the pattern shown previously. Take a screenshot of the successful output and include it in your report.
+\end{question}
+\begin{question}[Space Report]
+    Capture the output of this report and include it in your final report.
+\end{question}
+\begin{question}[Longest Path]
+    Capture the Longest path and the time it takes in ns. Include this information in your final report. If you were to include additional bits in the adder, how would you expect the time to scale? What do you think could be done to improve this?
+\end{question}
+\begin{question}[Improvement]
+\begin{enumerate}
+    \item Close the timing analyzer, recompile the design, and repeat the steps in this section starting from Subsection \textbf{\ref{ss:spaceanalysis} - Space Analysis}. Was there an improvement in the longest path? What about in the space used? Why do you think that is?
+    \item Update the timing constraint to a value of \keyword{5ns}. Save the SDC file and recompile. Check the path report again. Was the design able to meet the constraint? Why do you think that is the case?
+\end{enumerate}
+    
+\end{question}
+\begin{question}[Carry Lookahead Design]
+\begin{enumerate}
+    \item Review section \textbf{3.4} of the textbook. Design a 4-bit and an 8-bit carry lookahead adder.
+    \item Write a test bench for this design, simulate it, and verify it behaves correctly. Capture the output and include it in your final report.
+    \item Replace the ripple carry adder in your top level module with the carry lookahead.
+    \item Recompile the design and capture the space and timing information just as done previously. Include this information in your report.
+    \item Reflect on the differences in the reported values between the designs. Do you notice any trend?
+\end{enumerate}
+\end{question}
+\begin{bonusquestion}[Graphing time vs space -- Design Challenge (Extra Credit)]
+Help Bob create a graph showing how the time (delay) and space (hardware/gates) requirements grow as the bits increase from 2 to 10 bits. Maybe then the CEO will understand why they can't build that 256-bit carry lookahead adder he's dreaming about. (Bonus points if you can spot the exact moment when Bob's sanity begins to crack under the exponential growth curve.)
+\end{bonusquestion}
+\end{questionssection}
+\clearpage
 \section{Introduction}
 
 In Lab 1 you explored design techniques and principles through multiplexer circuits. The purpose of this lab is to deepen your understanding of digital logic and Boolean algebra. As undergraduate students in the field of digital design, you will now transition from theoretical concepts to practical implementation using Verilog and FPGAs.
@@ -70,9 +84,7 @@ Throughout this lab, you will learn how to:
 
 By the end of this lab, you will have been introduced to the complete digital design workflow, from conceptualization to hardware implementation. This experience will reinforce your understanding of digital logic principles and prepare you for more complex designs in future labs.
 
-\clearpage
-
-\begin{extra}[frametitle={Textbook Reading}]
+\begin{extra}[{Textbook Reading}]
     Although not strictly necessary to complete this lab, it \textbf{strongly} recommended that you review Chapter 3 of the textbook before moving on. Most of what is covered in this lab is given a thorough treatment in Chapter 3.
 \end{extra}
 \section{Number systems and Binary review}
@@ -204,7 +216,6 @@ And 2 outputs
 \noindent
 This circuit is considered a half adder because it has no input for a carry-in bit. Without a carry-in bit, sums larger than 2 bits are not computable. To get around this limitation, 2 half adders can be connected in series to create a full adder. The truth table for a half adder is given in \autoref{tab:half_adder}.}
 
-% Requires: \usepackage{amssymb}
 \begin{table}[htpb!]
     \centering
     \begin{tabular}{cc | cc}
@@ -339,21 +350,20 @@ Simulation is a crucial first step before implementing any digital design in har
 \hfill\break
 \hfill\break
 \noindent
-\textbf{Best Practice Guidelines:}
-\noindent
+\begin{important}[Test Bench Best Practices]
 \begin{itemize}
     \item Always simulate your design thoroughly before moving to hardware implementation.
     \item Test multiple input combinations and edge cases during simulation.
     \item Document and fix all simulation issues before proceeding to hardware.
 \end{itemize}
-\hfill\break
-\hfill\break
 \textbf{Remember:} While passing simulation is no guarantee of hardware success, failing simulation is a guarantee of hardware failure.
+\end{important}
+
 
 \subsection{Test Bench Template}
 Below is a complete test bench for the half adder design. This test bench can be readily adapted to any unit. We will go through each section and provide a thorough explanation.
 
-\begin{lstlisting}[language=verilog]
+\begin{codeblock}[language=verilog]
 `timescale 1ns/100ps    // 1 nanosecond steps, 100 picosecond precision
 
 module HalfAdder_tb();
@@ -416,7 +426,7 @@ initial begin
 end
 
 endmodule
-\end{lstlisting}
+\end{codeblock}
 
 \begin{enumerate}
     \item timescale and module
@@ -457,7 +467,6 @@ endmodule
 
 Save this file in your tests directory as \keyword{HalfAdder\_tb.v}. Open Questa and create a new project. Add Your \keyword{HalfAdder.v} file and your testbench.
 
-\hfill\break
 \begin{question}[Successful Simulation]
     Run your test bench in the Questa software. Verify a successful output by examining the output terminal. Take a screenshot of the output and include it in your lab report.
 \end{question}
@@ -571,7 +580,7 @@ Once the compilation is complete you can access the pin planner through \directi
     \caption{Pin Planner Interface}
     \label{fig:pinplanner}
 \end{figure}
-\begin{extra}[frametitle={Board Selection}]
+\begin{extra}[Board Selection]
     In the pin planner interface you will see above a large grid, the words\hfill\break \textbf{MAX 10 - 10M50DAF484C6GES}. This is the model number of the FPGA you are assigning pins to. If you don't see this name exactly, you have the wrong board selected. In this case, close the pin planner and in the main Quartus window go to:\hfill\break \directions{Assignments, Device}, select the correct device, and recompile. Then open the pin planner and make sure the correct device is now displayed at the top.
 \end{extra}
 
@@ -662,8 +671,7 @@ Before we can add constraints we need to tell the timing analyzer about our desi
 \end{figure}
 \end{minipage}
 \begin{minipage}[htbp!]{\linewidth}
-\noindent
-To determine a reasonable constraint, we will first check what the current maximum delay is. To do this go to \directions{Reports, Custom Reports, Report Path}. 
+\noindent 
     \begin{minipage}[ht!]{0.5\linewidth}
     \begin{figure}[H]
     \centering
@@ -684,14 +692,15 @@ To determine a reasonable constraint, we will first check what the current maxim
 \end{minipage}%
 \hspace{-0.46\textwidth}
 \begin{minipage}[t]{0.45\textwidth}
-\vspace{-112mm}
+\vspace{-100mm} % Absolute positioning is yuck. There is certainly a better way to do this
+To determine a reasonable constraint, we will first check what the current maximum delay is. To do this go to \directions{Reports, Custom Reports, Report Path}.
 This will open a new dialog like that in \autoref{fig:timingreportconfig}. To populate the \keyword{From:} input, press the ellipsis button to the right of it. This will open the name finder dialog shown in \autoref{fig:namefinder}. 
 
 Set the \keyword{Collection} option to \keyword{get\_ports}. Populate the name list in the name finder by clicking on the \keyword{List} button. Hold the \keyword{shift} button on your keyboard and select all your inputs and only your inputs. With the inputs selected, press the \keyword{$>$} button. Press \keyword{OK}. Repeat the process to populate the \keyword{To:} input, selecting \textbf{outputs only} in the name finder this time.
 
 With \keyword{From:} and \keyword{To:} fields populated, press \keyword{Report Path}. This will generate the report in \autoref{fig:pathreport}.
 \hfill\break
-\begin{extra}[frametitle={Report Values}]
+\begin{extra}[{Report Values}]
     The exact values in the report will differ between designs. These values depend on specific design decisions and how the compiler optimizes them.
 \end{extra}
 \hfill\break
@@ -765,7 +774,7 @@ With a better idea of the unconstrained timing, we can add timing constraints. T
 \subsection{Programming the FPGA}
 To put your design on the FPGA go to: \directions{Tools, Programmer}. This will open up the programmer shown in \autoref{fig:programmer}. Press the \keyword{Hardware Setup} button to open the hardware setup dialog shown in \autoref{fig:hardwaresetup}. Select your device from the \keyword{Currently Selected Hardware} dropdown. Close that window and press the \keyword{Auto Detect} button in the Programmer window. Finally, press \keyword{Start} to program the board.
 \hfill\break
-\begin{extra}[frametitle={No Device Found}]
+\begin{extra}[{No Device Found}]
     If you do not have options in the select hardware dropdown, make sure that you have installed the USB drivers correctly. Also, check the permissions for the user running Quartus. If you still have problems, contact the TA for help.
 \end{extra}
 
@@ -788,7 +797,7 @@ To put your design on the FPGA go to: \directions{Tools, Programmer}. This will 
 
 \hfill\break
 
-\begin{important}[frametitle={TA Checkoff}]
+\begin{important}[{TA Checkoff}]
     Make sure that you have demonstrated your working design to the TA before continuing.
 \end{important}
 
@@ -814,7 +823,8 @@ Bob works at Silicon Speedsters Inc., where the CEO is obsessed with "going fast
 
 Poor Bob tried explaining that carry lookahead adders grow... enthusiastically... in terms of hardware, but the CEO wouldn't listen. "Make it bigger!" he shouted, while dramatically waving his arms.
 
+\begin{bonusquestion}[Graphing time vs space]
 Help Bob create a graph showing how the time (delay) and space (hardware/gates) requirements grow as the bits increase from 2 to 10 bits. Maybe then the CEO will understand why they can't build that 256-bit carry lookahead adder he's dreaming about. (Bonus points if you can spot the exact moment when Bob's sanity begins to crack under the exponential growth curve.)
+\end{bonusquestion}
 
-Note: For maximum entertainment value, please use different colored markers for the time and space plots. The CEO is also colorblind, but that's a problem for another day.
 \end{document}

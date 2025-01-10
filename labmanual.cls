@@ -1,128 +1,277 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% labmanual.cls - Custom LaTeX class for laboratory manuals
+% Created: 2024/10/24
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{labmanual}[2024/10/24 Custom article class]
 
-% Load the base article class with any options passed to your class
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Class Options and Base Class Loading
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{journal}}
 \ProcessOptions\relax
 \LoadClass[10pt]{article}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Required Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Font packages
 \usepackage[scaled=1.0]{helvet}
-\renewcommand{\familydefault}{\sfdefault}
-
 \usepackage[letterspace=500]{microtype}
 \usepackage[scaled=0.85]{beramono}
-% Your resets and modifications go here
- \usepackage{parskip}
-
-
-\hyphenpenalty=5000  % Makes hyphenation very unlikely
-\exhyphenpenalty=10000  % Makes hyphenation of already-hyphenated words very unlikely
-
-
-% Save original list parameters
-\let\olditemize\itemize
-\let\endolditemize\enditemize
-\let\oldenumerate\enumerate
-\let\endoldenumerate\endenumerate
-
-% Remove indent and add spacing between paragraphs
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{1\baselineskip}
-
-% Restore original list spacing inside itemize
-\renewenvironment{itemize}{%
-    \setlength{\parskip}{1em}% Reset parskip inside lists
-    \olditemize
-}{%
-    \endolditemize
-    \setlength{\parskip}{1\baselineskip}% Restore parskip after list
-}
-
-% Restore original list spacing inside enumerate
-\renewenvironment{enumerate}{%
-    \setlength{\parskip}{1em}% Reset parskip inside lists
-    \oldenumerate
-}{%
-    \endoldenumerate
-    \setlength{\parskip}{1\baselineskip}% Restore parskip after list
-}
-
-% Alter some LaTeX defaults for better treatment of figures:
-    % See p.105 of "TeX Unbound" for suggested values.
-    % See pp. 199-200 of Lamport's "LaTeX" book for details.
-    %   General parameters, for ALL pages:
-    \renewcommand{\topfraction}{0.9}	% max fraction of floats at top
-    \renewcommand{\bottomfraction}{0.8}	% max fraction of floats at bottom
-    %   Parameters for TEXT pages (not float pages):
-    \setcounter{topnumber}{2}
-    \setcounter{bottomnumber}{2}
-    \setcounter{totalnumber}{4}     % 2 may work better
-    \setcounter{dbltopnumber}{2}    % for 2-column pages
-    \renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
-    \renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
-    %   Parameters for FLOAT pages (not text pages):
-    \renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
-	% N.B.: floatpagefraction MUST be less than topfraction !!
-    \renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
-
-	% remember to use [htp] or [htpb] for placement
-
-    \usepackage[utf8x]{inputenc}
+\usepackage[utf8x]{inputenc}
 \usepackage[T1]{fontenc}
+
+% Math and science packages
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage[version=4]{mhchem}
 \usepackage{stmaryrd}
-\usepackage{graphicx}
-\usepackage[export]{adjustbox}
+
+% Layout and formatting packages
+\usepackage{parskip}
+\usepackage{geometry}
 \usepackage{fancyhdr}
-\usepackage{verbatim}
-\usepackage[formats]{listings}
-\usepackage{xcolor}
 \usepackage{float}
 \usepackage{newfloat}
 \usepackage{array}
-\usepackage{fancyvrb}
-\usepackage{makecell}
 \usepackage{multicol}
-\usepackage{bold-extra} % Provides bold support for monospaced fonts
-\usepackage{chngpage}
-\usepackage{geometry}
 \usepackage{paracol}
-\usepackage{fancyhdr}
 \usepackage{longtable}
-\usepackage{caption} % For table numbering
-\usepackage{soul}
-\usepackage{varioref}
-\usepackage{wrapfig}
-\usepackage{hyperref}
-\usepackage{subcaption}
 \usepackage{booktabs}
-\usepackage[framemethod=TikZ]{mdframed}
-% Define the new aside environment style without arrows
-\usepackage{xparse}
-\usepackage{xstring}
-\usepackage{tikz}
-% Load required packages
-\usepackage[most]{tcolorbox}
+\usepackage{makecell}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{wrapfig}
 \usepackage{enumitem}
 \usepackage{flafter}
+
+% Code and verbatim packages
+\usepackage{fancyvrb}
+\usepackage{bold-extra}
+\usepackage{verbatim}
+\usepackage[formats]{listings}
+
+% Graphics and color packages
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage[framemethod=TikZ]{mdframed}
+
+% Utility packages
+\usepackage{soul}
+\usepackage{varioref}
+\usepackage{hyperref}
+\usepackage{xparse}
+\usepackage{xstring}
 \usepackage{environ}
+\usepackage{chngpage}
+\usepackage{collect} % for the aside env
 
-\mdfsetup{skipabove=1em,skipbelow=1em}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Setup (Evaluated First)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Create a wrapper for non-breaking environments
-\newcommand{\makeunbreakable}[1]{%
-  \expandafter\RenewEnviron\expandafter{#1}{%
-    \par\nobreak\vfil\penalty0\vfilneg
-    \begin{samepage}
-      \BODY
-    \end{samepage}
-  }%
+\let\@oldtitle\title
+\renewcommand{\title}[1]{%
+    \gdef\@mytitle{#1}%
+    \@oldtitle{#1}%
 }
 
+% Make captions numbered by section
+\captionsetup{within=section}
 
+% Remove ugly borders around links
+\hypersetup{
+    colorlinks,
+    linkcolor={red!10!black},
+    citecolor={blue!50!black},
+    urlcolor=[cmyk]{.6,.9,0,.7} % Purple
+}
+
+% Frame spacing
+\mdfsetup{skipabove=1em,skipbelow=1em}
+
+%% Load tikz libraries
+\usetikzlibrary{calc} % For performing calculations
+\usetikzlibrary{positioning} % For dynamic positioning (requires calc)
+\usetikzlibrary{arrows}    % For arrow tips
+\usetikzlibrary{shadows.blur}   % For blur shadows
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color and Style Definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{black}{rgb}{0,0,0}
+\definecolor{yellow}{rgb}{1, 0.89, 0.36}
+\definecolor{blue}{rgb}{0.49803922, 0.78431373, 0.97254902}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+%% Frame Styles (Colored Boxes)
+\mdfdefinestyle{extrastyle}{
+    backgroundcolor=blue!50,
+    roundcorner=10pt,
+    linewidth=1pt,
+    linecolor=black,
+    frametitlebackgroundcolor=blue!60,
+    frametitleaboveskip=10pt,
+    frametitlebelowskip=5pt,
+    frametitlerule=false,
+    frametitlerulecolor=blue,
+    nobreak=true
+}
+
+\mdfdefinestyle{importantstyle}{
+    backgroundcolor=red!50,
+    roundcorner=10pt,
+    linewidth=1pt,
+    linecolor=black,
+    frametitlebackgroundcolor=red!60,
+    frametitleaboveskip=10pt,
+    frametitlebelowskip=5pt,
+    frametitlerule=false,
+    frametitlerulecolor=red,
+    nobreak=true
+}
+
+\mdfdefinestyle{questionstyle}{
+    backgroundcolor=yellow!40,
+    roundcorner=10pt,
+    linewidth=1pt,
+    linecolor=black,
+    frametitlebackgroundcolor=yellow!50,
+    frametitleaboveskip=10pt,
+    frametitlebelowskip=5pt,
+    frametitlerule=false,
+    frametitlerulecolor=black,
+    nobreak=true,
+}
+
+%% Listing Styles (code boxes)
+
+% Console style
+\lstdefinestyle{console}{
+    keywordstyle=\color{black},
+    commentstyle=\color{codegray},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+% Default code style
+\lstdefinestyle{defaultstyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstdefineformat{V}{~=\( \sim \)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Typography and Spacing Settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set default font to sans-serif
+\renewcommand{\familydefault}{\sfdefault}
+
+% Hyphenation settings
+\hyphenpenalty=5000      % Makes hyphenation very unlikely
+\exhyphenpenalty=10000   % Makes hyphenation of already-hyphenated words very unlikely
+
+% Paragraph formatting
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1\baselineskip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% List Environment Modifications
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Save original list environments
+\let\olditemize\itemize
+\let\endolditemize\enditemize
+\let\oldenumerate\enumerate
+\let\endoldenumerate\endenumerate
+
+% Modify itemize environment
+\renewenvironment{itemize}{%
+    \setlength{\parskip}{.5em}%
+    \olditemize
+}{%
+    \endolditemize
+    \setlength{\parskip}{1\baselineskip}%
+}
+
+% Modify enumerate environment
+\renewenvironment{enumerate}{%
+    \setlength{\parskip}{.5em}%
+    \oldenumerate
+}{%
+    \endoldenumerate
+    \setlength{\parskip}{1\baselineskip}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Float Parameters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% General parameters for all pages
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+
+% Parameters for text pages
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\setcounter{dbltopnumber}{2}
+\renewcommand{\dbltopfraction}{0.9}
+\renewcommand{\textfraction}{0.07}
+
+% Parameters for float pages
+\renewcommand{\floatpagefraction}{0.7}
+\renewcommand{\dblfloatpagefraction}{0.7}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom Commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Utility commands
+
+% Create a command to set up the headers
+\newcommand{\makeheaders}{%
+    \setlength{\headheight}{15.2pt}%
+    \pagestyle{fancy}%
+    \fancyhf{}%
+    \fancyhead[R]{ECE/CS 3700}%
+    \fancyhead[L]{\@mytitle}%
+}
+\newcommand{\code}[1]{\textbf{\texttt{#1}}}
+\newcommand{\keyword}[1]{{\usefont{OT1}{lmtt}{b}{n}#1}}
+\newcommand{\todo}[1]{\hl{\textbf{TODO: #1}}}
 \NewDocumentCommand{\directions}{>{\SplitList{,}}m}{%
   \begingroup
   \bfseries
@@ -142,157 +291,140 @@
   \normalfont
 }
 
-\newcommand{\code}[1]{\textbf{\texttt{#1}}}
-
-%\newcommand{\keyword}[1]{\textbf{\texttt{#1}}}
-
-\usetikzlibrary{shapes,arrows,positioning,calc,shadows.blur}
-% Reduce left and right margins
-\geometry{
-  left=2cm,  % Adjust the left margin
-  right=2cm, % Adjust the right margin (leaving space for the right column)
-  top=2.5cm,
-  bottom=2.5cm
+% Roman section numbering
+\newcounter{romansectioncounter}
+\newcommand{\romansection}[1]{%
+    \edef\originalsection{\arabic{section}}%
+    \renewcommand{\thesection}{\roman{section}}%
+    \setcounter{section}{\value{romansectioncounter}}%
+    \section{#1}%
+    \stepcounter{romansectioncounter}%
+    \renewcommand{\thesection}{\arabic{section}}%
+    \setcounter{section}{\originalsection}%
 }
 
-\definecolor{black}{rgb}{0,0,0}
-\definecolor{yellow}{rgb}{1, 0.89, 0.36}
-\definecolor{blue}{rgb}{0.49803922, 0.78431373, 0.97254902}
-\newcommand{\keyword}[1]{{\usefont{OT1}{lmtt}{b}{n}#1}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom Environments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Code block environment (prevents page breaks in code blocks)
+\lstnewenvironment{codeblock}[1][]
+    {\leavevmode\hfill\break\vspace{\baselineskip}\minipage{\linewidth}\lstset{#1}}
+    {\endminipage\leavevmode\hfill\break\vspace{\baselineskip}\ignorespacesafterend}
 
-\newcommand{\todo}[1]{\hl{\textbf{TODO: #1}}}
-
-% Define a counter for the question environment
-\newcounter{questioncounter}
-
-% Define a custom environment that wraps around mdframed and accepts a custom title argument
-\NewDocumentEnvironment{question}{o}{ % [o] denotes an optional argument
-  \stepcounter{questioncounter} % Increment the counter
-  \begin{mdframed}[
-    backgroundcolor=yellow!40,
-    roundcorner=10pt,
-    linewidth=1pt,
-    linecolor=black, % Set border color to black
-    frametitlebackgroundcolor=yellow!50, % Match background color for title
-    frametitleaboveskip=10pt,
-    frametitlebelowskip=5pt,
-    frametitlerule=false, % remove black border under the title
-    frametitlerulecolor=black, % Set title border color to black
-    nobreak=true,
-    frametitle={Question \thequestioncounter: \IfNoValueTF{#1}{Default Title}{#1}} % If no title, use "Default Title"
-  ]
-}{
-\end{mdframed}
-}
-
-\newcounter{bonusquestioncounter}
-\NewDocumentEnvironment{bonusquestion}{o}{ % [o] denotes an optional argument
-  \stepcounter{bonusquestioncounter} % increment the counter for bonusquestion
-  \begin{mdframed}[
-    backgroundcolor=yellow!40,
-    roundcorner=10pt,
-    linewidth=1pt,
-    linecolor=black, % Set border color to black
-    frametitlebackgroundcolor=yellow!50, % Match background color for title
-    frametitleaboveskip=10pt,
-    frametitlebelowskip=5pt,
-    frametitlerule=false, % Ensure a black border under the title
-    frametitlerulecolor=black, % Set title border color to black
-    nobreak=true,
-    frametitle={Bonus Question \thebonusquestioncounter: \IfNoValueTF{#1}{Default Title}{#1}} % If no title, use "Default Title"
-  ]
-}{
-\end{mdframed}
-}
-
-\NewDocumentEnvironment{aside}{O{0.7,0.3}O{right}O{}}{%
-  \par\noindent%
-  \columnratio{#1}%
-  \begin{paracol}{2}%
-  \IfStrEqCase{#2}{%
-    {left}{\switchcolumn[0]}%
-    {right}{\switchcolumn[1]}%
-  }
-  \begin{extra}[frametitle=#3]%
+% Questions section environment
+\NewDocumentEnvironment{questionssection}{}{%
+    \setcounter{questioncounter}{0}%
+    \romansection{Questions}%
+    \vspace{1em}%
+    \begin{important}%
+    The questions in this section are a collection of the questions found in context throughout the lab manual. This is for convenience while working through the lab. Each question need only be answered once.%
+    \end{important}%
 }{%
-  \end{extra}%
-  \IfStrEqCase{#2}{%
-    {left}{\switchcolumn[1]}%
-    {right}{\switchcolumn[0]}%
-  }
-  \end{paracol}%
-  \par%
+    \setcounter{questioncounter}{0}%
+    \setcounter{bonusquestioncounter}{0}%
 }
 
-\newmdenv[
-  backgroundcolor=blue!50,
-  roundcorner=10pt,
-  linewidth=1pt,
-  linecolor=black, % Set border color to black
-  frametitlebackgroundcolor=blue!60, % Match background color for title
-  frametitleaboveskip=10pt,
-  frametitlebelowskip=5pt,
-  frametitlerule=false, % Ensure a black border under the title
-  frametitlerulecolor=blue,
-  nobreak=true
-]{extra}
+% Question environments
+\newcounter{questioncounter}
+\newcounter{bonusquestioncounter}
 
-\newmdenv[
-  backgroundcolor=red!50,
-  roundcorner=10pt,
-  linewidth=1pt,
-  linecolor=black, % Set border color to black
-  frametitlebackgroundcolor=red!60, % Match background color for title
-  frametitleaboveskip=10pt,
-  frametitlebelowskip=5pt,
-  frametitlerule=false, % Ensure a black border under the title
-  frametitlerulecolor=red, % Set title border color to black
-  nobreak=true
-]{important}
-
-
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-
-\lstdefinestyle{console}{
-    keywordstyle=\color{black},
-    commentstyle=\color{codegray},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2
+\NewDocumentEnvironment{question}{o}{%
+    \stepcounter{questioncounter}%
+    \addcontentsline{toc}{subsection}{Question \thequestioncounter: \IfNoValueTF{#1}{Default Title}{#1}}%
+    \begin{mdframed}[
+        style=questionstyle,
+        frametitle={Question \thequestioncounter: \IfNoValueTF{#1}{\null}{#1}}
+    ]
+}{%
+    \end{mdframed}
 }
 
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{backcolour},   
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2
+\NewDocumentEnvironment{bonusquestion}{o}{%
+    \stepcounter{bonusquestioncounter}%
+    \begin{mdframed}[
+        style=questionstyle,
+        frametitle={Bonus Question \thebonusquestioncounter: \IfNoValueTF{#1}{Default Title}{#1}}
+    ]
+}{%
+    \end{mdframed}
 }
 
-\lstdefineformat{V}{~=\( \sim \)}
+% Extra environment
+\NewDocumentEnvironment{extra}{o}{%
+    \begin{mdframed}[
+        style=extrastyle,
+        frametitle=\IfNoValueTF{#1}{\null}{#1}
+    ]
+    \vspace{.5em}% add a bit of space to prevent bullets from riding up
+}{%
+    \end{mdframed}
+}
 
-\lstset{style=mystyle, format=V, numbers=none}
+
+% Important environment
+\NewDocumentEnvironment{important}{o}{%
+    \begin{mdframed}[
+        style=importantstyle,
+        frametitle=\IfNoValueTF{#1}{\null}{#1}
+    ]
+    \vspace{.5em}% add a bit of space to prevent bullets from riding up
+}{%
+    \end{mdframed}
+}
+
+%% 
+% Aside environment
+%%
+% Define collections for left and right content
+\definecollection{leftcontent}
+\definecollection{rightcontent}
+
+% Counter to make unique collection names
+\newcounter{asidecounter}
+
+% Define the sub-environments
+\NewDocumentEnvironment{leftcontent}{+b}{%
+    \begin{collect}{leftcontent\theasidecounter}{}{}%
+    #1%
+    \end{collect}%
+}{}
+
+\NewDocumentEnvironment{rightcontent}{+b}{%
+    \begin{collect}{rightcontent\theasidecounter}{}{}%
+    #1%
+    \end{collect}%
+}{}
+
+% Define the main aside environment
+\NewDocumentEnvironment{aside}{O{0.6,0.4}m}{%
+    % Define new collections for this instance
+    \stepcounter{asidecounter}%
+    \definecollection{leftcontent\theasidecounter}%
+    \definecollection{rightcontent\theasidecounter}%
+    % Start the environment
+    \par\noindent%
+    \begin{paracol}{2}[\medskip]%
+    \columnratio{#1}%
+    \switchcolumn[0]%
+    \includecollection{leftcontent\theasidecounter}%
+    \switchcolumn[1]%
+    \begin{mdframed}[style=extrastyle,frametitle={#2}]%
+    \vspace{.5em}% add a bit of space to prevent bullets from riding up
+    \includecollection{rightcontent\theasidecounter}%
+    \end{mdframed}%
+    \end{paracol}%
+    \par%
+}{}
+%% 
+% End Aside environment
+%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\lstset{style=defaultstyle, format=V, numbers=none}
 
